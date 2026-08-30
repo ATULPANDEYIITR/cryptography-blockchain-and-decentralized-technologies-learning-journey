@@ -299,13 +299,7 @@ These fundamentals provide the foundation for learning modern encryption algorit
 
 Cryptography will be covered gradually, starting with basic concepts and classical cryptography before progressing to modern cryptographic algorithms, mathematical foundations, public-key cryptography, digital signatures, cryptographic protocols, and advanced cryptography.
 
-## Day 01 Completed
-
-**Focus:** Introduction to Cryptography
-
-**Next:** Continue with the next concepts in Cryptography.
-
-# Day 01: Blockchain Basics
+# Blockchain Basics
 
 ## Objective
 
@@ -349,13 +343,7 @@ These fundamentals provide the foundation for learning distributed ledgers, cons
 
 Blockchain will be covered gradually, starting with basic concepts and progressing toward cryptography, distributed systems, consensus mechanisms, Bitcoin, Ethereum, smart contracts, wallets, tokens, decentralized applications, and advanced blockchain technologies.
 
-## Day 01 Completed
-
-**Focus:** Introduction to Blockchain
-
-**Next:** Continue with the next concepts in Blockchain.
-
-# Day 01: Decentralized Technologies
+# Decentralized Technologies
 
 ## Objective
 
@@ -403,13 +391,7 @@ These fundamentals provide the foundation for learning peer-to-peer networks, di
 
 Decentralized Technologies will be covered gradually, starting with basic concepts and progressing toward peer-to-peer networks, distributed systems, blockchain, consensus mechanisms, decentralized storage, identity, smart contracts, decentralized applications, and advanced decentralized architectures.
 
-## Day 01 Completed
-
-**Focus:** Introduction to Decentralized Technologies
-
-**Next:** Continue with the next concepts in Decentralized Technologies.
-
-# Day 01: Mathematical Foundations for Cryptography
+# Mathematical Foundations for Cryptography
 
 ## Objective
 
@@ -455,9 +437,3 @@ These fundamentals provide the foundation for understanding symmetric cryptograp
 ## Learning Approach
 
 Mathematical Foundations for Cryptography will be covered gradually, starting with basic arithmetic and number theory before progressing toward modular inverses, congruences, Euler's theorem, Fermat's theorem, finite fields, groups, rings, and mathematical concepts used in modern cryptography.
-
-## Day 01 Completed
-
-**Focus:** Basic Number Theory and Modular Arithmetic
-
-**Next:** Continue with the next mathematical concepts required for Cryptography.
