@@ -1,256 +1,127 @@
-# Day 1: Introduction to Number Theory
+# Introduction to Number Theory
 
-Welcome to **Day 1 of Mathematical Foundations for Cybersecurity**.
+This lesson introduces the basic concepts of number theory and implements them using Python.
 
-This lesson introduces the basic concepts of **Number Theory** and implements those concepts using Python.
+The Python program covers:
 
-Number theory is one of the most important mathematical foundations of cybersecurity and cryptography.
-
-It provides the mathematical foundation for technologies such as:
-
-* RSA
-* Diffie-Hellman
-* Digital signatures
-* Elliptic Curve Cryptography
-* Hash functions
+* Even and odd numbers
+* Factors
+* Multiples
+* Prime numbers
+* Prime number checking
+* Generating prime numbers
+* Greatest Common Divisor (GCD)
+* Least Common Multiple (LCM)
+* Divisibility
+* Prime factorization
+* Perfect numbers
+* Coprime numbers
 * Modular arithmetic
-* Public-key cryptography
-* Zero-knowledge proofs
-* Post-quantum cryptography
+* Modular exponentiation
+* Euler's Totient Function
+* Sum of proper divisors
+* Sieve of Eratosthenes
 
-The goal of this lesson is not only to learn mathematical definitions, but also to understand how these concepts can be implemented programmatically.
+## What is number theory?
 
----
+Number theory is a branch of mathematics that studies integers and their properties.
 
-# 1. Learning objectives
-
-After completing this lesson, you should understand:
-
-1. What number theory is
-2. Natural numbers
-3. Whole numbers
-4. Integers
-5. Even and odd numbers
-6. Factors
-7. Multiples
-8. Prime numbers
-9. Composite numbers
-10. Divisibility
-11. Greatest Common Divisor
-12. Least Common Multiple
-13. Prime factorization
-14. Perfect numbers
-15. Coprime numbers
-16. Modular arithmetic
-17. Modular exponentiation
-18. Euler's Totient Function
-19. Sieve of Eratosthenes
-20. Why number theory is important in cryptography
-
-You will also learn how to implement these concepts in Python.
-
----
-
-# 2. What is number theory?
-
-Number theory is a branch of mathematics that studies **integers and their properties**.
-
-For example:
-
-```text
-1, 2, 3, 4, 5, 6, 7, 8, 9, 10...
-```
-
-Number theory investigates questions such as:
-
-* Is a number prime?
-* What are the factors of a number?
-* Can one number be divided by another?
-* What is the greatest common divisor?
-* What is the least common multiple?
-* How can a number be represented as a product of primes?
-* What happens when arithmetic is performed using a modulus?
-
-These questions become extremely important in cryptography.
-
----
-
-# 3. Types of numbers
-
-## 3.1 Natural numbers
-
-Natural numbers are counting numbers.
-
-```text
-1, 2, 3, 4, 5, 6, ...
-```
-
-Depending on the mathematical convention, some definitions include 0.
-
----
-
-## 3.2 Whole numbers
-
-Whole numbers include zero and positive integers.
-
-```text
-0, 1, 2, 3, 4, 5, ...
-```
-
----
-
-## 3.3 Integers
-
-Integers include positive numbers, negative numbers and zero.
+Examples of integers include:
 
 ```text
 ..., -3, -2, -1, 0, 1, 2, 3, ...
 ```
 
-Python represents integers using the `int` data type.
+Number theory deals with concepts such as divisibility, factors, prime numbers, GCD, LCM, modular arithmetic and prime factorization.
 
-Example:
+## Even and odd numbers
 
-```python
-x = 25
-y = -10
-z = 0
-```
-
----
-
-# 4. Even and odd numbers
-
-An integer is **even** if it is divisible by 2.
+An integer is even if it is completely divisible by 2.
 
 Examples:
 
 ```text
-2
-4
-6
-8
-10
-12
+2, 4, 6, 8, 10, 12
 ```
 
-An integer is **odd** if it is not divisible by 2.
+An integer is odd if it is not completely divisible by 2.
 
 Examples:
 
 ```text
-1
-3
-5
-7
-9
-11
+1, 3, 5, 7, 9, 11
 ```
 
-Python uses the modulo operator `%`.
-
-```python
-number % 2
-```
-
-If the result is:
-
-```text
-0
-```
-
-the number is even.
-
-Example:
+Python uses the modulo operator `%` to determine whether a number is divisible by another number.
 
 ```python
 10 % 2
 ```
 
-Result:
+Output:
 
 ```text
 0
 ```
 
-Therefore 10 is even.
+Therefore, 10 is even.
 
----
+The program implements this concept using the `check_even_odd()` function.
 
-# 5. Factors
+```python
+def check_even_odd(number):
+    if number % 2 == 0:
+        return "Even"
+    else:
+        return "Odd"
+```
+
+## Factors
 
 A factor is a number that divides another number without leaving a remainder.
 
-Consider:
-
-```text
-12
-```
-
-The factors of 12 are:
+For example, the factors of 12 are:
 
 ```text
 1, 2, 3, 4, 6, 12
 ```
 
-Because:
+This is because each of these numbers divides 12 exactly.
 
-```text
-12 ÷ 1 = 12
-12 ÷ 2 = 6
-12 ÷ 3 = 4
-12 ÷ 4 = 3
-12 ÷ 6 = 2
-12 ÷ 12 = 1
-```
-
-In Python:
+The program checks each number from 1 to the given number and uses the modulo operator to determine whether it is a factor.
 
 ```python
-12 % 3
+for i in range(1, number + 1):
+    if number % i == 0:
+        factors.append(i)
+```
+
+For example:
+
+```python
+find_factors(12)
 ```
 
 returns:
 
 ```text
-0
+[1, 2, 3, 4, 6, 12]
 ```
 
-Therefore 3 is a factor of 12.
+## Multiples
 
----
+Multiples are obtained by multiplying a number by positive integers.
 
-# 6. Multiples
-
-Multiples are obtained by multiplying a number by integers.
-
-For example, multiples of 5 are:
+The first 10 multiples of 5 are:
 
 ```text
-5
-10
-15
-20
-25
-30
-35
-40
-...
+5, 10, 15, 20, 25, 30, 35, 40, 45, 50
 ```
 
-Mathematically:
-
-```text
-5 × 1 = 5
-5 × 2 = 10
-5 × 3 = 15
-...
-```
-
-Python:
+The program generates multiples using a loop.
 
 ```python
-def find_multiples(number, count):
+def find_multiples(number, count=10):
     multiples = []
 
     for i in range(1, count + 1):
@@ -259,11 +130,21 @@ def find_multiples(number, count):
     return multiples
 ```
 
----
+For example:
 
-# 7. Prime numbers
+```python
+find_multiples(5)
+```
 
-A prime number is a positive integer greater than 1 that has exactly two positive factors:
+returns:
+
+```text
+[5, 10, 15, 20, 25, 30, 35, 40, 45, 50]
+```
+
+## Prime numbers
+
+A prime number is an integer greater than 1 that has exactly two positive factors:
 
 ```text
 1
@@ -273,175 +154,107 @@ itself
 Examples:
 
 ```text
-2
-3
-5
-7
-11
-13
-17
-19
-23
-29
+2, 3, 5, 7, 11, 13, 17, 19
 ```
 
-For example:
+For example, the factors of 7 are:
 
 ```text
-7
+1, 7
 ```
 
-has only:
+Therefore, 7 is prime.
+
+The number 9 is not prime because its factors are:
 
 ```text
-1 × 7
+1, 3, 9
 ```
 
-Therefore 7 is prime.
+A number greater than 1 that is not prime is called a composite number.
 
-But:
+Examples of composite numbers:
 
 ```text
-12
+4, 6, 8, 9, 10, 12
 ```
 
-has:
+## Checking whether a number is prime
+
+The program contains an `is_prime()` function to determine whether a number is prime.
+
+```python
+def is_prime(number):
+    if number <= 1:
+        return False
+
+    for i in range(2, int(math.sqrt(number)) + 1):
+        if number % i == 0:
+            return False
+
+    return True
+```
+
+The program checks possible factors only up to the square root of the number.
+
+For example, to check whether 29 is prime:
 
 ```text
-1
-2
-3
-4
-6
-12
+√29 ≈ 5.38
 ```
 
-Therefore 12 is not prime.
-
----
-
-# 8. Why is 2 special?
-
-2 is the smallest prime number.
-
-It is also the only even prime number.
-
-Every other even number can be divided by 2.
-
-For example:
-
-```text
-4 = 2 × 2
-6 = 2 × 3
-8 = 2 × 4
-10 = 2 × 5
-```
-
-Therefore they are composite.
-
----
-
-# 9. Checking whether a number is prime
-
-A simple approach is to test every number from 2 to `n - 1`.
-
-But that is inefficient.
-
-We can improve the algorithm by checking only up to:
-
-```text
-√n
-```
-
-Why?
-
-Suppose:
-
-```text
-n = a × b
-```
-
-If both `a` and `b` were greater than √n, then:
-
-```text
-a × b > n
-```
-
-which is impossible.
-
-Therefore, if a number has a factor, at least one factor must be less than or equal to √n.
+Therefore, it is sufficient to check possible divisors up to 5.
 
 The program uses:
 
 ```python
-for i in range(2, int(math.sqrt(number)) + 1):
+math.sqrt(number)
 ```
 
----
+from Python's `math` module.
 
-# 10. Composite numbers
+## Generating prime numbers
 
-A composite number has more than two positive factors.
+The program can generate all prime numbers up to a specified limit.
 
-Examples:
+For example:
+
+```python
+generate_primes(30)
+```
+
+returns:
 
 ```text
-4
-6
-8
-9
-10
-12
-14
-15
+[2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
 ```
+
+The function uses the `is_prime()` function to test each number.
+
+```python
+def generate_primes(limit):
+    primes = []
+
+    for number in range(2, limit + 1):
+        if is_prime(number):
+            primes.append(number)
+
+    return primes
+```
+
+## Greatest Common Divisor
+
+GCD stands for Greatest Common Divisor.
+
+The GCD of two numbers is the largest positive number that divides both numbers exactly.
 
 For example:
 
 ```text
-9
+48 and 18
 ```
 
-has:
-
-```text
-1
-3
-9
-```
-
-Therefore it is composite.
-
----
-
-# 11. GCD
-
-GCD means:
-
-**Greatest Common Divisor**
-
-It is the largest number that divides two numbers without leaving a remainder.
-
-Example:
-
-```text
-48
-18
-```
-
-Factors of 48:
-
-```text
-1, 2, 3, 4, 6, 8, 12, 16, 24, 48
-```
-
-Factors of 18:
-
-```text
-1, 2, 3, 6, 9, 18
-```
-
-Common factors:
+The common factors are:
 
 ```text
 1, 2, 3, 6
@@ -453,76 +266,64 @@ Therefore:
 GCD(48, 18) = 6
 ```
 
----
+## Euclidean Algorithm
 
-# 12. Euclidean algorithm
+The program calculates GCD using the Euclidean Algorithm.
 
-The program calculates GCD using the **Euclidean Algorithm**.
-
-The fundamental relationship is:
+The main relationship is:
 
 ```text
 gcd(a, b) = gcd(b, a mod b)
 ```
 
-Example:
+For example:
 
 ```text
-gcd(48, 18)
-
 48 mod 18 = 12
-
-gcd(18, 12)
-
 18 mod 12 = 6
-
-gcd(12, 6)
-
 12 mod 6 = 0
 ```
 
 Therefore:
 
 ```text
-GCD = 6
+GCD(48, 18) = 6
 ```
 
-Python implementation:
+The Python implementation uses a `while` loop:
 
 ```python
-while b != 0:
-    a, b = b, a % b
+def calculate_gcd(a, b):
+    a = abs(a)
+    b = abs(b)
+
+    while b != 0:
+        a, b = b, a % b
+
+    return a
 ```
 
-This algorithm is extremely important in cryptography.
+The `abs()` function converts negative values into positive values.
 
----
+## Least Common Multiple
 
-# 13. LCM
-
-LCM means:
-
-**Least Common Multiple**
+LCM stands for Least Common Multiple.
 
 It is the smallest positive number that is divisible by both numbers.
 
-Example:
+For example, the multiples of 12 are:
 
 ```text
-12 and 18
+12, 24, 36, 48, 60, ...
 ```
 
-Multiples of 12:
+The multiples of 18 are:
 
 ```text
-12, 24, 36, 48, 60...
+18, 36, 54, 72, ...
 ```
 
-Multiples of 18:
-
-```text
-18, 36, 54, 72...
-```
+The first common multiple is 36.
 
 Therefore:
 
@@ -530,35 +331,41 @@ Therefore:
 LCM(12, 18) = 36
 ```
 
-There is an important relationship:
+The program uses the relationship:
 
 ```text
-LCM(a,b) × GCD(a,b) = |a × b|
+LCM(a, b) × GCD(a, b) = |a × b|
 ```
 
 Therefore:
 
 ```text
-LCM(a,b) = |a × b| / GCD(a,b)
+LCM(a, b) = |a × b| / GCD(a, b)
 ```
 
----
+The implementation is:
 
-# 14. Divisibility
+```python
+def calculate_lcm(a, b):
+    if a == 0 or b == 0:
+        return 0
 
-Divisibility asks whether one number can be divided by another without a remainder.
+    gcd = calculate_gcd(a, b)
 
-Example:
+    return abs(a * b) // gcd
+```
+
+## Divisibility
+
+A number is divisible by another number when there is no remainder after division.
+
+For example:
 
 ```text
 100 ÷ 10 = 10
 ```
 
-Therefore:
-
-```text
-10 divides 100
-```
+Therefore, 100 is divisible by 10.
 
 In Python:
 
@@ -572,25 +379,31 @@ returns:
 True
 ```
 
----
+The program implements this using:
 
-# 15. Prime factorization
+```python
+def check_divisibility(number, divisor):
+    if divisor == 0:
+        return False
+
+    return number % divisor == 0
+```
+
+## Prime factorization
 
 Prime factorization means expressing a number as a product of prime numbers.
 
-Example:
+For example:
 
 ```text
 60
 ```
 
-We can break it down:
+can be broken down as:
 
 ```text
 60 = 2 × 30
-
 30 = 2 × 15
-
 15 = 3 × 5
 ```
 
@@ -600,221 +413,167 @@ Therefore:
 60 = 2 × 2 × 3 × 5
 ```
 
-or:
+The program returns:
 
 ```text
-60 = 2² × 3 × 5
-```
-
-The Python program returns:
-
-```python
 [2, 2, 3, 5]
 ```
 
-Prime factorization is fundamental to cryptography.
+The function repeatedly divides the number by its prime factors.
 
----
+```python
+def prime_factorization(number):
+    if number <= 1:
+        return []
 
-# 16. Why prime factorization matters in cryptography
+    factors = []
 
-Consider two large prime numbers:
+    while number % 2 == 0:
+        factors.append(2)
+        number //= 2
 
-```text
-p
-q
+    factor = 3
+
+    while factor * factor <= number:
+        while number % factor == 0:
+            factors.append(factor)
+            number //= factor
+
+        factor += 2
+
+    if number > 1:
+        factors.append(number)
+
+    return factors
 ```
 
-Multiplying them is relatively easy:
-
-```text
-n = p × q
-```
-
-But if someone only knows:
-
-```text
-n
-```
-
-finding the original:
-
-```text
-p
-q
-```
-
-can be computationally difficult when the numbers are extremely large.
-
-This idea is related to the security assumptions historically used by **RSA**.
+The `//` operator performs integer division.
 
 For example:
 
-```text
-61 × 53 = 3233
-```
-
-If we know:
-
-```text
-61
-53
-```
-
-multiplication is easy.
-
-Given:
-
-```text
-3233
-```
-
-we can factor it because the numbers are small.
-
-Cryptographic systems use enormously larger numbers.
-
----
-
-# 17. Coprime numbers
-
-Two numbers are coprime if their GCD is 1.
-
-Example:
-
-```text
-8 and 15
-```
-
-Factors of 8:
-
-```text
-1, 2, 4, 8
-```
-
-Factors of 15:
-
-```text
-1, 3, 5, 15
-```
-
-Their only common factor is:
-
-```text
-1
-```
-
-Therefore:
-
-```text
-GCD(8,15) = 1
-```
-
-So they are coprime.
-
-Python:
-
 ```python
-calculate_gcd(8, 15) == 1
+60 // 2
 ```
 
----
+returns:
 
-# 18. Perfect numbers
+```text
+30
+```
 
-A perfect number is equal to the sum of its proper divisors.
+## Perfect numbers
 
-Consider:
+A perfect number is a number that is equal to the sum of its proper positive divisors.
+
+For example:
 
 ```text
 6
 ```
 
-Proper divisors:
+The proper divisors of 6 are:
 
 ```text
 1, 2, 3
 ```
 
-Sum:
+Their sum is:
 
 ```text
 1 + 2 + 3 = 6
 ```
 
-Therefore:
+Therefore, 6 is a perfect number.
 
-```text
-6
-```
-
-is a perfect number.
-
-Another example:
-
-```text
-28
-```
-
-Proper divisors:
-
-```text
-1, 2, 4, 7, 14
-```
-
-Sum:
+Another example is 28:
 
 ```text
 1 + 2 + 4 + 7 + 14 = 28
 ```
 
-Therefore:
+The program uses the `is_perfect_number()` function to determine whether a number is perfect.
+
+## Sum of proper divisors
+
+A proper divisor is a positive divisor of a number excluding the number itself.
+
+For example, the proper divisors of 12 are:
 
 ```text
-28
+1, 2, 3, 4, 6
 ```
 
-is also perfect.
-
----
-
-# 19. Modular arithmetic
-
-Modular arithmetic is one of the most important concepts for cryptography.
-
-It is sometimes described as **clock arithmetic**.
-
-Consider a 12-hour clock.
-
-After:
+Their sum is:
 
 ```text
-12 + 1
+1 + 2 + 3 + 4 + 6 = 16
 ```
 
-we get:
+The program provides:
+
+```python
+sum_proper_divisors(12)
+```
+
+which returns:
 
 ```text
-1
+16
 ```
 
-Mathematically:
+## Coprime numbers
+
+Two numbers are coprime if their GCD is 1.
+
+For example:
 
 ```text
-13 mod 12 = 1
+8 and 15
 ```
 
-The notation:
+Their GCD is:
 
 ```text
-a mod n
+GCD(8, 15) = 1
 ```
 
-means the remainder when `a` is divided by `n`.
+Therefore, 8 and 15 are coprime.
+
+The program checks this using:
+
+```python
+def are_coprime(a, b):
+    return calculate_gcd(a, b) == 1
+```
 
 Example:
 
+```python
+are_coprime(8, 15)
+```
+
+returns:
+
 ```text
-17 mod 5 = 2
+True
+```
+
+## Modular arithmetic
+
+Modular arithmetic deals with the remainder after division.
+
+Python uses the `%` operator for modulo operations.
+
+For example:
+
+```python
+17 % 5
+```
+
+returns:
+
+```text
+2
 ```
 
 because:
@@ -823,115 +582,114 @@ because:
 17 = 5 × 3 + 2
 ```
 
----
-
-# 20. Modulo operator in Python
-
-Python uses:
-
-```python
-%
-```
-
-Example:
-
-```python
-17 % 5
-```
-
-Output:
+Therefore:
 
 ```text
-2
+17 mod 5 = 2
 ```
 
-Another example:
+## Modular addition
+
+The program provides a function for modular addition:
 
 ```python
-100 % 10
+def modular_addition(a, b, modulus):
+    return (a + b) % modulus
 ```
 
-Output:
+For example:
 
-```text
-0
+```python
+modular_addition(17, 8, 5)
 ```
 
----
-
-# 21. Modular addition
-
-Suppose:
-
-```text
-a = 17
-b = 8
-m = 5
-```
-
-Then:
+calculates:
 
 ```text
 (17 + 8) mod 5
 ```
 
-becomes:
+which gives:
 
 ```text
-25 mod 5
+25 mod 5 = 0
 ```
 
-Therefore:
+## Modular subtraction
 
-```text
-0
-```
-
-Python:
+The program implements modular subtraction using:
 
 ```python
-(17 + 8) % 5
+def modular_subtraction(a, b, modulus):
+    return (a - b) % modulus
 ```
 
----
+For example:
 
-# 22. Modular multiplication
+```python
+modular_subtraction(17, 8, 5)
+```
 
-Example:
+calculates:
 
 ```text
-17 × 8 mod 5
+(17 - 8) mod 5
 ```
 
-First:
+which gives:
+
+```text
+9 mod 5 = 4
+```
+
+## Modular multiplication
+
+The program implements modular multiplication using:
+
+```python
+def modular_multiplication(a, b, modulus):
+    return (a * b) % modulus
+```
+
+For example:
+
+```python
+modular_multiplication(17, 8, 5)
+```
+
+calculates:
+
+```text
+(17 × 8) mod 5
+```
+
+Since:
 
 ```text
 17 × 8 = 136
 ```
 
-Then:
+and:
 
 ```text
 136 mod 5 = 1
 ```
 
-Therefore:
+the result is:
 
 ```text
-17 × 8 ≡ 1 (mod 5)
+1
 ```
 
----
+## Modular exponentiation
 
-# 23. Modular exponentiation
-
-Modular exponentiation involves calculations such as:
+Modular exponentiation involves calculations of the form:
 
 ```text
-a^b mod n
+a^b mod m
 ```
 
-Example:
+For example:
 
 ```text
 2^10 mod 1000
@@ -949,76 +707,45 @@ we get:
 1024 mod 1000 = 24
 ```
 
-Python has an extremely useful built-in function:
-
-```python
-pow(base, exponent, modulus)
-```
-
-Example:
+Python provides the three-argument `pow()` function for efficient modular exponentiation.
 
 ```python
 pow(2, 10, 1000)
 ```
 
-Output:
+returns:
 
 ```text
 24
 ```
 
-This is much more useful than calculating:
+The program implements this using:
 
 ```python
-2 ** 10 % 1000
+def modular_power(base, exponent, modulus):
+    return pow(base, exponent, modulus)
 ```
 
-for very large values because Python's three-argument `pow()` performs modular exponentiation efficiently.
+## Euler's Totient Function
 
----
-
-# 24. Euler's Totient Function
-
-Euler's Totient Function is represented as:
+Euler's Totient Function is represented by:
 
 ```text
 φ(n)
 ```
 
-It counts how many integers from:
+It counts the positive integers from 1 to `n` that are coprime with `n`.
 
-```text
-1 to n
-```
-
-are relatively prime to `n`.
-
-Consider:
+For example, consider:
 
 ```text
 n = 8
 ```
 
-Numbers from 1 to 8:
+The numbers from 1 to 8 that are coprime with 8 are:
 
 ```text
-1
-2
-3
-4
-5
-6
-7
-8
-```
-
-Numbers coprime with 8:
-
-```text
-1
-3
-5
-7
+1, 3, 5, 7
 ```
 
 Therefore:
@@ -1027,572 +754,300 @@ Therefore:
 φ(8) = 4
 ```
 
-Euler's Totient Function is extremely important in classical public-key cryptography, especially RSA.
-
----
-
-# 25. Sieve of Eratosthenes
-
-The Sieve of Eratosthenes is an efficient algorithm for finding prime numbers.
-
-Suppose we want all primes up to:
-
-```text
-30
-```
-
-Start with:
-
-```text
-2, 3, 4, 5, 6, 7, 8, 9, ...
-```
-
-Start with 2.
-
-Mark its multiples:
-
-```text
-4, 6, 8, 10, 12...
-```
-
-Then move to 3.
-
-Mark:
-
-```text
-6, 9, 12, 15...
-```
-
-Continue until the required limit.
-
-The remaining unmarked numbers are prime.
-
-The Python implementation is:
+The program calculates the function by checking the GCD of each number with `n`.
 
 ```python
-def sieve_of_eratosthenes(limit):
+def euler_totient(number):
+    if number <= 0:
+        return 0
 
-    is_prime_number = [True] * (limit + 1)
+    count = 0
 
-    is_prime_number[0] = False
-    is_prime_number[1] = False
+    for i in range(1, number + 1):
+        if calculate_gcd(i, number) == 1:
+            count += 1
 
-    p = 2
-
-    while p * p <= limit:
-
-        if is_prime_number[p]:
-
-            for multiple in range(p * p, limit + 1, p):
-                is_prime_number[multiple] = False
-
-        p += 1
-
-    return [
-        number
-        for number in range(2, limit + 1)
-        if is_prime_number[number]
-    ]
+    return count
 ```
 
----
+## Sieve of Eratosthenes
 
-# 26. Running the program
+The Sieve of Eratosthenes is an algorithm used to generate prime numbers up to a given limit.
 
-Open your terminal in the project directory.
-
-Run:
-
-```bash
-python day_001_number_theory.py
-```
-
-You should see output similar to:
+For example, to find primes up to 20, start with:
 
 ```text
-============================================================
-INTRODUCTION TO NUMBER THEORY
-============================================================
-
-1. Even/Odd
-12 is Even
-
-2. Factors
-Factors of 12: [1, 2, 3, 4, 6, 12]
-
-3. Multiples
-First 10 multiples of 5: [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]
-
-4. Prime Check
-29 is a prime number.
-
-5. Prime Numbers
-Primes up to 50: [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47]
+2, 3, 4, 5, 6, 7, 8, 9, 10,
+11, 12, 13, 14, 15, 16, 17, 18, 19, 20
 ```
 
----
+Starting with 2, eliminate its multiples:
 
-# 27. Important Python concepts learned
+```text
+4, 6, 8, 10, 12, 14, 16, 18, 20
+```
 
-This program also introduces several Python programming concepts.
+Then consider 3 and eliminate its multiples:
 
-## Variables
+```text
+6, 9, 12, 15, 18
+```
+
+After continuing the process, the remaining numbers are prime:
+
+```text
+2, 3, 5, 7, 11, 13, 17, 19
+```
+
+The program implements the algorithm using a Boolean list:
+
+```python
+is_prime_number = [True] * (limit + 1)
+```
+
+Numbers identified as composite are changed from `True` to `False`.
+
+The function can be used as:
+
+```python
+sieve_of_eratosthenes(100)
+```
+
+to generate all prime numbers up to 100.
+
+## Python concepts practiced
+
+The program also practices basic Python programming concepts.
+
+### Variables
 
 ```python
 number = 12
 ```
 
-## Functions
+### Functions
 
 ```python
 def is_prime(number):
     ...
 ```
 
-## Conditional statements
+### Conditional statements
 
 ```python
 if number % 2 == 0:
-    print("Even")
+    ...
+else:
+    ...
 ```
 
-## Loops
+### For loops
 
 ```python
 for i in range(1, number + 1):
     ...
 ```
 
-## While loops
+### While loops
 
 ```python
 while b != 0:
     ...
 ```
 
-## Lists
+### Lists
 
 ```python
 factors = []
 ```
 
-## List append
+### Adding items to a list
 
 ```python
 factors.append(i)
 ```
 
-## Exception handling
-
-```python
-try:
-    ...
-except ValueError:
-    ...
-```
-
-## Modules
+### Modules
 
 ```python
 import math
 ```
 
-## Main program entry point
+### Exception handling
+
+The interactive calculator uses `try` and `except` to handle invalid input.
+
+```python
+try:
+    ...
+except ValueError:
+    print("Invalid input.")
+```
+
+### Main program
+
+The program uses:
 
 ```python
 if __name__ == "__main__":
     basic_demo()
 ```
 
----
+This allows the demonstration function to run when the file is executed directly.
 
-# 28. Complexity awareness
+## Running the program
 
-Understanding algorithms also means understanding how efficiently they run.
+Open the terminal in the folder containing the Python file and run:
 
-The basic factor-finding implementation checks:
-
-```text
-1 → n
+```bash
+python day_001_number_theory.py
 ```
 
-so its complexity is approximately:
+The program will execute the demonstration section and display results for the different number theory operations.
 
-```text
-O(n)
-```
+## Interactive calculator
 
-The prime-checking implementation only checks up to:
+The Python file also contains an interactive number theory calculator.
 
-```text
-√n
-```
-
-so its complexity is approximately:
-
-```text
-O(√n)
-```
-
-The Sieve of Eratosthenes is significantly more efficient for generating many primes.
-
-Its time complexity is approximately:
-
-```text
-O(n log log n)
-```
-
-Understanding computational complexity becomes very important when we work with cryptographic algorithms.
-
----
-
-# 29. Number theory and cybersecurity
-
-Number theory is not just academic mathematics.
-
-It forms part of the foundation of modern cybersecurity.
-
-A simplified relationship is:
-
-```text
-Number Theory
-      │
-      ├── Prime Numbers
-      │       │
-      │       └── RSA
-      │
-      ├── Modular Arithmetic
-      │       │
-      │       ├── RSA
-      │       ├── Diffie-Hellman
-      │       └── Cryptographic Algorithms
-      │
-      ├── GCD
-      │       │
-      │       └── Modular Inverses
-      │
-      ├── Euler's Totient
-      │       │
-      │       └── RSA Mathematics
-      │
-      └── Prime Factorization
-              │
-              └── RSA Security Assumption
-```
-
-The important point is:
-
-```text
-Mathematics
-     ↓
-Algorithms
-     ↓
-Cryptography
-     ↓
-Cybersecurity
-```
-
----
-
-# 30. Exercises
-
-Complete these exercises without looking at the solution first.
-
-## Exercise 1
-
-Write a function that determines whether a number is positive, negative, or zero.
-
-Example:
-
-```text
-Input: 10
-Output: Positive
-```
-
----
-
-## Exercise 2
-
-Write a function that returns the number of factors of a given number.
-
-Example:
-
-```text
-Input: 12
-Output: 6
-```
-
----
-
-## Exercise 3
-
-Write a function that finds the smallest prime number greater than a given number.
-
-Example:
-
-```text
-Input: 10
-Output: 11
-```
-
----
-
-## Exercise 4
-
-Write a function that generates all prime numbers between two numbers.
-
-Example:
-
-```text
-Input:
-10
-30
-
-Output:
-11, 13, 17, 19, 23, 29
-```
-
----
-
-## Exercise 5
-
-Write your own GCD algorithm without using:
+The calculator can be enabled by uncommenting:
 
 ```python
-math.gcd()
+interactive_calculator()
 ```
 
----
+at the bottom of the Python file.
 
-## Exercise 6
+It provides options for:
 
-Write your own LCM algorithm.
+```text
+Check Even/Odd
+Find Factors
+Check Prime
+Prime Factorization
+Calculate GCD
+Calculate LCM
+Check Perfect Number
+Euler Totient
+Check Coprime
+Modular Arithmetic
+Generate Primes
+Exit
+```
 
----
+The calculator accepts integer input from the user and performs the selected operation.
 
-## Exercise 7
+## Practice exercises
+
+Try the following exercises using the functions implemented in the program.
+
+Check whether these numbers are even or odd:
+
+```text
+25
+48
+73
+100
+```
+
+Find the factors of:
+
+```text
+24
+36
+50
+100
+```
+
+Check whether these numbers are prime:
+
+```text
+17
+23
+51
+97
+101
+```
+
+Calculate:
+
+```text
+GCD(24, 36)
+GCD(48, 60)
+GCD(81, 27)
+GCD(101, 10)
+```
+
+Calculate:
+
+```text
+LCM(4, 6)
+LCM(12, 15)
+LCM(8, 20)
+```
 
 Find the prime factorization of:
 
 ```text
+24
+36
+72
 100
+120
 ```
 
-Expected:
+Check whether these are perfect numbers:
 
 ```text
-2 × 2 × 5 × 5
+6
+28
+12
+100
+496
 ```
 
----
-
-## Exercise 8
-
-Find all perfect numbers between:
+Determine whether these pairs are coprime:
 
 ```text
-1 and 10000
+(8, 15)
+(12, 18)
+(17, 20)
+(21, 35)
 ```
-
----
-
-## Exercise 9
 
 Calculate:
 
 ```text
-7^20 mod 13
+17 mod 5
+25 mod 7
+100 mod 9
+123 mod 10
 ```
 
-Use Python's:
+Use Python's `pow()` function to calculate:
 
-```python
-pow()
+```text
+2^10 mod 100
+3^5 mod 7
+5^10 mod 13
+7^20 mod 11
 ```
-
----
-
-## Exercise 10
 
 Calculate:
 
 ```text
+φ(5)
+φ(8)
 φ(10)
 φ(12)
 φ(15)
-φ(20)
 ```
 
----
-
-# 31. Challenge project
-
-Build a **Number Theory Analyzer**.
-
-The program should accept an integer from the user and display:
+Generate all prime numbers up to:
 
 ```text
-Number
-│
-├── Even / Odd
-├── Prime / Composite
-├── Factors
-├── Number of Factors
-├── Prime Factorization
-├── Perfect Number?
-├── Sum of Proper Divisors
-└── Euler Totient
+50
+100
+200
 ```
 
-Example:
-
-```text
-Enter number: 60
-
-Number: 60
-Type: Composite
-
-Factors:
-1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30, 60
-
-Number of factors:
-12
-
-Prime factorization:
-2 × 2 × 3 × 5
-
-Perfect number:
-No
-
-Euler Totient:
-16
-```
-
-This is your first small mathematical programming project.
-
----
-
-# 32. Connection to the next lessons
-
-This lesson provides the foundation for the upcoming cryptography topics.
-
-Recommended progression:
-
-```text
-Day 001
-Number Theory
-     ↓
-Day 002
-Modular Arithmetic
-     ↓
-Day 003
-GCD & Extended Euclidean Algorithm
-     ↓
-Day 004
-Modular Inverses
-     ↓
-Day 005
-Prime Numbers & Primality Testing
-     ↓
-Day 006
-Fermat's Little Theorem
-     ↓
-Day 007
-Euler's Theorem
-     ↓
-Day 008
-Chinese Remainder Theorem
-     ↓
-Day 009
-RSA Mathematics
-     ↓
-Day 010
-RSA Implementation
-```
-
-This progression will eventually take you from basic mathematics to practical cryptography.
-
----
-
-# 33. Key takeaways
-
-Remember these concepts:
-
-```text
-Factor
-    ↓
-A number that divides another number exactly
-
-Prime
-    ↓
-A number greater than 1 with exactly two factors
-
-GCD
-    ↓
-Largest common divisor
-
-LCM
-    ↓
-Smallest common multiple
-
-Coprime
-    ↓
-Two numbers whose GCD is 1
-
-Modulo
-    ↓
-Remainder after division
-
-Prime Factorization
-    ↓
-Representing a number as a product of primes
-
-Euler's Totient
-    ↓
-Count of integers relatively prime to n
-
-Sieve
-    ↓
-Efficient method for generating primes
-```
-
-Most importantly:
-
-```text
-Number Theory
-      ↓
-Modular Arithmetic
-      ↓
-Cryptography
-      ↓
-Cybersecurity
-```
-
----
-
-# 34. Files for this lesson
-
-The Day 1 directory should contain:
-
-```text
-day-001-number-theory/
-│
-├── README.md
-│
-└── day_001_number_theory.py
-```
-
-The `README.md` explains the mathematical concepts.
-
-The `.py` file contains the practical implementation.
-
-This separation is useful because your GitHub repository becomes both:
-
-```text
-Learning Documentation
-+
-Practical Code
-```
-
-which makes the project much easier for someone else to understand and follow.
-
+using the `sieve_of_eratosthenes()` function.
