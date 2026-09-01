@@ -1,4 +1,4 @@
-# Day 01: Cryptography Basics
+# Day 00: Cryptography Basics
 
 ## Objective
 
@@ -86,3 +86,97 @@ These fundamentals provide the foundation for learning distributed ledgers, cons
 
 Blockchain will be covered gradually, starting with basic concepts and progressing toward cryptography, distributed systems, consensus mechanisms, Bitcoin, Ethereum, smart contracts, wallets, tokens, decentralized applications, and advanced blockchain technologies.
 
+# Decentralized Technologies
+
+## Objective
+
+Begin building a foundation in Decentralized Technologies by understanding how decentralized systems distribute participation, control, data, and decision-making across multiple nodes.
+
+## Topics Covered
+
+* What is Decentralization?
+* Centralized Systems
+* Decentralized Systems
+* Centralized vs Decentralized Architecture
+* Nodes
+* Peer-to-Peer Networks
+* Distributed Data
+* Node Communication
+* Trust Models
+* Consensus
+* Advantages of Decentralization
+* Challenges
+* Decentralized Technologies
+* Basic Decentralized System Flow
+
+## Code Implementation
+
+The Python program demonstrates:
+
+* Centralized and decentralized system concepts
+* Representing network nodes
+* Peer-to-peer networks
+* Distributed data
+* Communication between nodes
+* Basic trust models
+* A simple majority-based consensus example
+* Advantages and challenges of decentralization
+
+**External Libraries:** None
+
+## Why This Matters
+
+Decentralized technologies distribute participation and control across multiple entities instead of relying entirely on a single central authority.
+
+These fundamentals provide the foundation for learning peer-to-peer networks, distributed systems, blockchain, distributed ledgers, decentralized storage, decentralized identity, smart contracts, and decentralized applications.
+
+## Learning Approach
+
+Decentralized Technologies will be covered gradually, starting with basic concepts and progressing toward peer-to-peer networks, distributed systems, blockchain, consensus mechanisms, decentralized storage, identity, smart contracts, decentralized applications, and advanced decentralized architectures.
+
+# Mathematical Foundations for Cryptography
+
+## Objective
+
+Begin building the mathematical foundation required to understand cryptography, starting with basic number theory and modular arithmetic.
+
+## Topics Covered
+
+* Basic Arithmetic
+* Integer Division
+* Remainders
+* Divisibility
+* Factors
+* Prime Numbers
+* Greatest Common Divisor
+* Modular Arithmetic
+* Modular Addition
+* Modular Multiplication
+* Modular Exponentiation
+
+## Code Implementation
+
+The Python program demonstrates:
+
+* Basic arithmetic operations
+* Integer division and remainders
+* Divisibility
+* Finding factors
+* Identifying prime numbers
+* Finding the GCD
+* Modular arithmetic
+* Modular addition and multiplication
+* Modular exponentiation
+* Efficient modular power using Python
+
+**External Libraries:** None
+
+## Why This Matters
+
+Cryptography relies heavily on mathematical concepts such as number theory, prime numbers, modular arithmetic, and mathematical functions.
+
+These fundamentals provide the foundation for understanding symmetric cryptography, public-key cryptography, RSA, Diffie-Hellman, elliptic-curve cryptography, digital signatures, and post-quantum cryptography.
+
+## Learning Approach
+
+Mathematical Foundations for Cryptography will be covered gradually, starting with basic arithmetic and number theory before progressing toward modular inverses, congruences, Euler's theorem, Fermat's theorem, finite fields, groups, rings, and mathematical concepts used in modern cryptography.
