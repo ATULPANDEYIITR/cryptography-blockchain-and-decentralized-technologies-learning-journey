@@ -36,312 +36,130 @@ This repository will document my learning day by day, with each stage building u
 
 ## What I will learn
 
-### Mathematical foundations
-
-* Number theory
-* Prime numbers
-* Modular arithmetic
-* Greatest common divisor
-* Euclidean algorithm
-* Euler's theorem
-* Fermat's little theorem
-* Discrete logarithms
-* Probability
-* Combinatorics
-* Mathematical concepts used in cryptography
-
-### Cryptography foundations
-
-* Classical cryptography
-* Modern cryptography
-* Confidentiality
-* Integrity
-* Authentication
-* Non-repudiation
-* Threat models
-* Cryptographic security principles
-
-### Symmetric cryptography
-
-* Symmetric encryption
-* Block ciphers
-* Stream ciphers
-* AES
-* DES
-* ChaCha20
-* Encryption modes
-* Initialization vectors
-* Nonces
-* Authenticated encryption
-
-### Hash functions
-
-* Cryptographic hashing
-* SHA family
-* SHA-256
-* SHA-3
-* Collision resistance
-* Preimage resistance
-* Password hashing
-* Salting
-* Key derivation
-
-### Asymmetric cryptography
-
-* Public-key cryptography
-* Private and public keys
-* RSA
-* Diffie-Hellman
-* Elliptic Curve Cryptography
-* Key exchange
-* Digital signatures
-
-### Authentication and secure communication
-
-* Message authentication
-* MAC
-* HMAC
-* Digital signatures
-* Certificates
-* Certificate authorities
-* Public Key Infrastructure
-* TLS
-* Secure communication
-
-### Cryptographic protocols
-
-* Key exchange
-* Authentication protocols
-* Secure channels
-* Secret sharing
-* Commitment schemes
-* Secure multi-party computation
-* Privacy-preserving protocols
-
-### Blockchain fundamentals
-
-* Blockchain concepts
-* Distributed ledgers
-* Blocks
-* Transactions
-* Hash-linked data
-* Merkle trees
-* Nodes
-* Wallets
-* Addresses
-* Public and private keys
-* Transaction validation
-* Block validation
-
-### Distributed systems
-
-* Distributed computing
-* Peer-to-peer systems
-* Replication
-* Fault tolerance
-* Byzantine failures
-* Byzantine Fault Tolerance
-* Distributed consensus
-* Distributed state
-
-### Consensus mechanisms
-
-* Consensus fundamentals
-* Proof of Work
-* Proof of Stake
-* Delegated Proof of Stake
-* Proof of Authority
-* Byzantine Fault Tolerance
-* Mining
-* Staking
-* Validators
-* Forks
-* Finality
-
-### Blockchain architecture
-
-* Blockchain layers
-* Layer 1
-* Layer 2
-* Transactions
-* Execution
-* Consensus
-* Data availability
-* Networking
-* Blockchain state
-* Nodes and validators
-
-### Smart contracts and decentralized applications
-
-* Smart contracts
-* Contract execution
-* Transactions
-* Gas
-* Contract state
-* Contract security
-* Decentralized applications
-* dApp architecture
-* Blockchain-based applications
-
-### Web3 and decentralized technologies
-
-* Web3
-* Decentralization
-* Tokenization
-* Digital assets
-* Decentralized identity
-* Decentralized storage
-* DAOs
-* Decentralized applications
-* On-chain systems
-
-### Blockchain security
-
-* Wallet security
-* Private-key security
-* Smart-contract security
-* Consensus attacks
-* Sybil attacks
-* 51% attacks
-* Reentrancy
-* Access-control vulnerabilities
-* Oracle-related risks
-* Bridge security
-* Blockchain threat modeling
-
-### Zero-knowledge and privacy technologies
-
-* Zero-knowledge proofs
-* Provers and verifiers
-* zk-SNARKs
-* zk-STARKs
-* Cryptographic commitments
-* Privacy-preserving computation
-* Secure multi-party computation
-* Privacy-preserving authentication
-
-### Post-quantum cryptography
-
-* Quantum threats to cryptography
-* Shor's algorithm
-* Grover's algorithm
-* Quantum-resistant cryptography
-* Lattice-based cryptography
-* Hash-based cryptography
-* Code-based cryptography
-* Post-quantum key establishment
-* Post-quantum digital signatures
-
-### Cryptography and blockchain intersection
-
-* Hash functions in blockchain
-* Digital signatures in transactions
-* Merkle trees
-* Public-key cryptography in blockchain
-* Cryptographic commitments
-* Zero-knowledge blockchain systems
-* Blockchain privacy
-* Post-quantum blockchain security
-
-## Learning approach
-
-The repository will follow a progressive learning approach:
-
-**Fundamentals → Mathematics → Cryptography → Distributed Systems → Blockchain → Consensus → Smart Contracts → Security → Privacy → Advanced Technologies → Research**
-
-Each day will build upon the previous day's learning, creating a continuous record of progress from beginner level toward advanced understanding.
-
-## Long-term goal
-
-To develop a comprehensive understanding of **cryptography, blockchain, decentralized systems, privacy technologies, and their security foundations**, combining mathematical concepts, theoretical knowledge, technical understanding, practical learning, and emerging research.
-
-# Day 01: Cryptography Basics
-
-## Objective
-
-Begin building a foundation in Cryptography by understanding how information can be protected using encryption, keys, and other cryptographic concepts.
-
-## Topics Covered
-
-* What is Cryptography?
-* Plaintext
-* Ciphertext
-* Cryptographic Keys
-* Encryption
-* Decryption
-* Caesar Cipher
-* Symmetric Cryptography
-* Asymmetric Cryptography
-* Hashing
-* Cryptographic Goals
-
-## Code Implementation
-
-The Python program demonstrates:
-
-* Plaintext and ciphertext
-* Basic encryption and decryption
-* Cryptographic keys
-* Caesar Cipher
-* Symmetric and asymmetric cryptography concepts
-* Basic hashing concepts
-* Fundamental cryptographic goals
-
-**External Libraries:** None
-
-## Why This Matters
-
-Cryptography provides the mathematical and technical foundation for protecting information and enabling secure communication.
-
-These fundamentals provide the foundation for learning modern encryption algorithms, hashing algorithms, digital signatures, public-key cryptography, key exchange, TLS, cryptographic protocols, and post-quantum cryptography.
-
-## Learning Approach
-
-Cryptography will be covered gradually, starting with basic concepts and classical cryptography before progressing to modern cryptographic algorithms, mathematical foundations, public-key cryptography, digital signatures, cryptographic protocols, and advanced cryptography.
-
-# Blockchain Basics
-
-## Objective
-
-Begin building a foundation in Blockchain by understanding blocks, transactions, hashes, and how individual blocks are connected to form a blockchain.
-
-## Topics Covered
-
-* What is Blockchain?
-* Blocks
-* Transactions
-* Hashes
-* Previous Hash
-* Blockchain Structure
-* Distributed Ledger
-* Blockchain Validation
-* Data Tampering
-* Consensus
-* Cryptography
-
-## Code Implementation
-
-The Python program demonstrates:
-
-* Creating a simple block
-* Storing transaction data
-* Generating a basic hash
-* Linking blocks using previous hashes
-* Creating a simple blockchain
-* Validating the blockchain
-* Demonstrating the effect of data tampering
-
-**External Libraries:** None
-
-## Why This Matters
-
-Blockchain combines data structures, cryptography, networking, and consensus mechanisms to create systems where records can be shared and verified across participants.
-
-These fundamentals provide the foundation for learning distributed ledgers, consensus mechanisms, Bitcoin, Ethereum, smart contracts, wallets, tokens, decentralized applications, and Web3 technologies.
-
-## Learning Approach
-
-Blockchain will be covered gradually, starting with basic concepts and progressing toward cryptography, distributed systems, consensus mechanisms, Bitcoin, Ethereum, smart contracts, wallets, tokens, decentralized applications, and advanced blockchain technologies.
+# 120-Day Cryptography, Blockchain and Decentralized Technologies Learning Schedule
+
+| Day | Topic |
+|---:|---|
+| 1 | Introduction to number theory |
+| 2 | Numbers, divisibility, factors and multiples |
+| 3 | Prime numbers |
+| 4 | Prime factorization |
+| 5 | Greatest common divisor (GCD) |
+| 6 | Euclidean algorithm |
+| 7 | Extended Euclidean algorithm |
+| 8 | Modular arithmetic |
+| 9 | Modular addition, subtraction and multiplication |
+| 10 | Modular inverse |
+| 11 | Fermat's little theorem |
+| 12 | Euler's totient function |
+| 13 | Euler's theorem |
+| 14 | Modular exponentiation |
+| 15 | Discrete logarithms |
+| 16 | Probability basics |
+| 17 | Combinations and permutations |
+| 18 | Mathematical concepts used in cryptography |
+| 19 | Introduction to cryptography |
+| 20 | Plaintext, ciphertext, keys, encryption and decryption |
+| 21 | Classical cryptography |
+| 22 | Substitution ciphers |
+| 23 | Transposition ciphers |
+| 24 | Classical cipher attacks |
+| 25 | Modern cryptography |
+| 26 | Confidentiality |
+| 27 | Integrity |
+| 28 | Authentication |
+| 29 | Non-repudiation |
+| 30 | Security threats and basic security principles |
+| 31 | Introduction to symmetric encryption |
+| 32 | How symmetric encryption works |
+| 33 | Block ciphers |
+| 34 | Stream ciphers |
+| 35 | DES |
+| 36 | Why DES became outdated |
+| 37 | AES introduction |
+| 38 | AES structure and working |
+| 39 | AES keys and rounds |
+| 40 | AES encryption and decryption |
+| 41 | Encryption modes |
+| 42 | ECB and CBC |
+| 43 | CTR mode |
+| 44 | Initialization vectors |
+| 45 | Nonces |
+| 46 | ChaCha20 |
+| 47 | Authenticated encryption |
+| 48 | AES-GCM and ChaCha20-Poly1305 |
+| 49 | Symmetric encryption practice project |
+| 50 | Introduction to hash functions |
+| 51 | Properties of cryptographic hash functions |
+| 52 | SHA family |
+| 53 | SHA-256 |
+| 54 | How SHA-256 works |
+| 55 | SHA-3 and Keccak |
+| 56 | Collision resistance |
+| 57 | Preimage resistance |
+| 58 | Second-preimage resistance |
+| 59 | Birthday problem and hash attacks |
+| 60 | Password hashing |
+| 61 | Password salts |
+| 62 | Rainbow tables and password attacks |
+| 63 | Key derivation |
+| 64 | Hash functions practice project |
+| 65 | Introduction to public-key cryptography |
+| 66 | Public keys and private keys |
+| 67 | How public-key cryptography works |
+| 68 | RSA basics |
+| 69 | RSA key generation |
+| 70 | RSA encryption and decryption |
+| 71 | RSA security and limitations |
+| 72 | Diffie-Hellman key exchange |
+| 73 | Diffie-Hellman step by step |
+| 74 | Man-in-the-middle attack on key exchange |
+| 75 | Introduction to elliptic curves |
+| 76 | Elliptic curves and points |
+| 77 | Elliptic curve calculations |
+| 78 | Elliptic Curve Cryptography (ECC) |
+| 79 | ECDH |
+| 80 | Digital signatures |
+| 81 | RSA digital signatures |
+| 82 | ECDSA |
+| 83 | Comparing RSA, Diffie-Hellman and ECC |
+| 84 | Public-key cryptography practice project |
+| 85 | Message authentication |
+| 86 | MAC |
+| 87 | HMAC |
+| 88 | Digital signatures for authentication |
+| 89 | Digital certificates |
+| 90 | Certificate authorities |
+| 91 | Public Key Infrastructure (PKI) |
+| 92 | TLS basics |
+| 93 | How a secure website connection works |
+| 94 | Secure communication |
+| 95 | Authentication and secure communication protocols |
+| 96 | Secret sharing |
+| 97 | Commitment schemes |
+| 98 | Secure multi-party computation |
+| 99 | Privacy-preserving protocols |
+| 100 | Cryptographic protocols practice project |
+| 101 | Introduction to blockchain |
+| 102 | Distributed ledgers |
+| 103 | Blocks and block structure |
+| 104 | Blockchain transactions |
+| 105 | Hashes in blockchain |
+| 106 | Linking blocks together |
+| 107 | Merkle trees |
+| 108 | Blockchain nodes |
+| 109 | Wallets |
+| 110 | Blockchain addresses and keys |
+| 111 | Transaction validation |
+| 112 | Block validation |
+| 113 | Peer-to-peer blockchain networks |
+| 114 | Building a simple blockchain in Python |
+| 115 | Blockchain consensus fundamentals |
+| 116 | Proof of Work and mining |
+| 117 | Proof of Stake, staking and validators |
+| 118 | Forks, finality and blockchain security |
+| 119 | Smart contracts, Web3, decentralized applications and blockchain privacy |
+| 120 | Zero-knowledge proofs, post-quantum cryptography and cryptography-blockchain integration |
 
 # Decentralized Technologies
 
