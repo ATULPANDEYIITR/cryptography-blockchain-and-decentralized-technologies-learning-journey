@@ -1,6 +1,4 @@
-"""
-
-Day 20: Plaintext, Ciphertext, Keys, Encryption and Decryption
+# Day 20: Plaintext, Ciphertext, Keys, Encryption and Decryption
 
 
 
@@ -20,19 +18,9 @@ This module intentionally uses a well-established cryptographic
 
 library instead of implementing a cryptographic algorithm manually.
 
-"""
-
-
-
 from \_\_future\_\_ import annotations
 
-
-
 from cryptography.fernet import Fernet, InvalidToken
-
-
-
-
 
 def generate\_key() -> bytes:
 
@@ -40,17 +28,11 @@ def generate\_key() -> bytes:
 
 &#x20;   return Fernet.generate\_key()
 
-
-
-
-
 def encrypt\_text(plaintext: str, key: bytes) -> str:
 
 &#x20;   """
 
 &#x20;   Encrypt plaintext and return the ciphertext as a string.
-
-
 
 &#x20;   Parameters
 
@@ -63,8 +45,6 @@ def encrypt\_text(plaintext: str, key: bytes) -> str:
 &#x20;   key:
 
 &#x20;       A valid Fernet key.
-
-
 
 &#x20;   Returns
 
@@ -80,39 +60,25 @@ def encrypt\_text(plaintext: str, key: bytes) -> str:
 
 &#x20;       raise TypeError("plaintext must be a string")
 
-
-
 &#x20;   if not plaintext:
 
 &#x20;       raise ValueError("plaintext cannot be empty")
-
-
 
 &#x20;   if not isinstance(key, bytes):
 
 &#x20;       raise TypeError("key must be bytes")
 
-
-
 &#x20;   cipher = Fernet(key)
 
 &#x20;   ciphertext = cipher.encrypt(plaintext.encode("utf-8"))
 
-
-
 &#x20;   return ciphertext.decode("utf-8")
-
-
-
-
 
 def decrypt\_text(ciphertext: str, key: bytes) -> str:
 
 &#x20;   """
 
 &#x20;   Decrypt ciphertext and return the original plaintext.
-
-
 
 &#x20;   Invalid keys and modified ciphertext raise ValueError instead
 
