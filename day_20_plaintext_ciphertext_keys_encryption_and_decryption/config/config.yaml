@@ -1,0 +1,37 @@
+project:
+  name: "Day 20 - Plaintext, Ciphertext, Keys, Encryption and Decryption"
+  mode: "educational"
+  version: "1.0.0"
+
+python:
+  algorithm: "Fernet"
+  library: "cryptography"
+  purpose: "Demonstrate authenticated symmetric encryption and decryption"
+
+web:
+  algorithm: "AES-256-GCM"
+  api: "Web Crypto API"
+  purpose: "Demonstrate browser-based encryption and decryption"
+
+cpp:
+  demonstration: "XOR"
+  purpose: "Illustrate the basic transformation idea behind encryption"
+  secure: false
+
+security:
+  demo_keys_only: true
+  production_secrets_in_source: false
+  real_secrets_allowed: false
+  modified_ciphertext_should_fail: true
+  wrong_key_should_fail: true
+
+learning:
+  plaintext: true
+  ciphertext: true
+  cryptographic_keys: true
+  encryption: true
+  decryption: true
+  symmetric_cryptography: true
+  asymmetric_cryptography: true
+  authentication: true
+  integrity: true

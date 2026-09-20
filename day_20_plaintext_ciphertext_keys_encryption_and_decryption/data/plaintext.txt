@@ -1,0 +1,5 @@
+This is an educational plaintext message for Day 20.
+
+Plaintext is information in its original readable form before encryption is applied.
+
+The purpose of this sample is to demonstrate how readable information can be transformed into ciphertext and later recovered through decryption.

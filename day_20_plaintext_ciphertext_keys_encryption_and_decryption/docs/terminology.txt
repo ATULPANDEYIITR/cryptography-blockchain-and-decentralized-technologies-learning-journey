@@ -1,0 +1,112 @@
+DAY 20 CRYPTOGRAPHY TERMINOLOGY
+
+Plaintext
+Plaintext is the original readable information that a sender wants to
+protect. It can be a message, document, password, database record,
+transaction, or any other form of data.
+
+Ciphertext
+Ciphertext is the transformed output produced by an encryption process.
+It is designed so that the original information cannot be understood
+without the required decryption process and key.
+
+Key
+A cryptographic key is information used by a cryptographic algorithm to
+control encryption or decryption. Depending on the cryptographic system,
+a key may be secret, public, or private.
+
+Encryption
+Encryption is the process of transforming plaintext into ciphertext.
+
+Decryption
+Decryption is the process of transforming ciphertext back into plaintext
+using the appropriate cryptographic key and algorithm.
+
+Symmetric Encryption
+Symmetric encryption uses the same secret key, or closely related secret
+key material, for encryption and decryption.
+
+Asymmetric Encryption
+Asymmetric cryptography uses a pair of mathematically related keys.
+The public key can be shared, while the private key must be protected.
+
+Secret Key
+A secret key is cryptographic key material that must remain protected
+from unauthorized users.
+
+Public Key
+A public key is designed to be shared. Public-key cryptography can use
+public keys for encryption, verification, or establishing secure
+communication depending on the algorithm and protocol.
+
+Private Key
+A private key is the confidential part of an asymmetric key pair. Its
+security is essential because possession of the private key can enable
+operations that the key owner is expected to control.
+
+Algorithm
+A cryptographic algorithm is a defined mathematical procedure used to
+perform cryptographic operations.
+
+Initialization Vector
+An initialization vector, commonly called an IV, is additional input
+used by many encryption modes. It helps ensure that encrypting the same
+plaintext multiple times does not necessarily produce identical output.
+
+Nonce
+A nonce is a value intended to be used only once within a specified
+cryptographic context. Correct nonce management is essential for many
+modern encryption algorithms.
+
+Authentication
+Authentication in authenticated encryption allows a system to detect
+unauthorized modification of protected data.
+
+Integrity
+Integrity means that data has not been improperly changed after it was
+created or protected.
+
+Confidentiality
+Confidentiality means preventing unauthorized parties from learning the
+protected information.
+
+Encoding
+Encoding changes data into another representation so that it can be
+stored, transmitted, or processed. Encoding is not the same as
+encryption because encoding does not provide secrecy by itself.
+
+Hashing
+Hashing converts input data into a fixed-size digest using a hash
+function. A cryptographic hash is generally designed to make it
+computationally difficult to recover the original input or find
+problematic collisions.
+
+Base64
+Base64 is an encoding format commonly used to represent binary data as
+text. Base64 is not encryption and does not make information secret.
+
+Password
+A password is human-created authentication information. Passwords should
+not normally be used directly as cryptographic keys. Password-based key
+derivation functions are designed to derive cryptographic keys from
+passwords more safely.
+
+Key Management
+Key management covers the generation, storage, distribution, rotation,
+backup, protection, and destruction of cryptographic keys.
+
+Key Rotation
+Key rotation means replacing cryptographic keys according to a defined
+security policy. Rotation can limit the amount of information protected
+by a single key and can support incident response.
+
+Cryptographic Library
+A cryptographic library provides established implementations of
+cryptographic algorithms and supporting operations. Applications should
+prefer well-reviewed libraries instead of implementing cryptographic
+algorithms from scratch.
+
+Security Principle
+Cryptographic security should depend on the protection of keys and the
+strength of established algorithms and protocols, not on keeping the
+algorithm itself secret.

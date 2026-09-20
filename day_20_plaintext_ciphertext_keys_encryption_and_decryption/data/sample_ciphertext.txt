@@ -1,0 +1,12 @@
+This file contains an illustrative ciphertext example for educational purposes.
+
+Example algorithm: AES-GCM
+Example representation: Base64
+
+Sample ciphertext:
+VGhpcyBpcyBhbiBlZHVjYXRpb25hbCBjaXBoZXJ0ZXh0IGV4YW1wbGUu
+
+Important:
+This value is only a documentation example. It is not a real secret,
+does not contain a private encryption key, and must not be treated as
+secure ciphertext for a production system.

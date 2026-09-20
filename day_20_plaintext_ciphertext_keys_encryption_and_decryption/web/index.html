@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+    <meta
+        name="description"
+        content="Interactive educational demonstration of plaintext, ciphertext, keys, encryption, and decryption."
+    >
+    <title>Day 20 | Encryption and Decryption</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <main class="container">
+        <header class="hero">
+            <p class="eyebrow">CRYPTOGRAPHY LEARNING JOURNEY</p>
+
+            <h1>
+                Plaintext, Ciphertext, Keys,
+                Encryption and Decryption
+            </h1>
+
+            <p class="intro">
+                An interactive demonstration showing how readable information
+                is transformed into protected ciphertext and recovered through
+                decryption using a cryptographic key.
+            </p>
+        </header>
+
+        <section class="card">
+            <h2>Encryption laboratory</h2>
+
+            <label for="plaintext">
+                Plaintext
+            </label>
+
+            <textarea
+                id="plaintext"
+                rows="5"
+                placeholder="Enter a message to encrypt..."
+            >Plaintext is readable information.</textarea>
+
+            <div class="button-group">
+                <button id="generateKey">
+                    Generate Key
+                </button>
+
+                <button id="encryptText">
+                    Encrypt
+                </button>
+
+                <button id="decryptText">
+                    Decrypt
+                </button>
+
+                <button id="clearAll" class="secondary">
+                    Clear
+                </button>
+            </div>
+        </section>
+
+        <section class="results">
+            <article class="card result-card">
+                <div class="step-number">01</div>
+                <h2>Encryption key</h2>
+                <p>
+                    The key is secret information used by the encryption
+                    algorithm to transform plaintext into ciphertext.
+                </p>
+
+                <pre id="keyOutput">No key generated.</pre>
+            </article>
+
+            <article class="card result-card">
+                <div class="step-number">02</div>
+                <h2>Ciphertext</h2>
+                <p>
+                    Ciphertext is the protected representation produced after
+                    encryption. It is not intended to be directly readable.
+                </p>
+
+                <pre id="ciphertextOutput">No ciphertext generated.</pre>
+            </article>
+
+            <article class="card result-card">
+                <div class="step-number">03</div>
+                <h2>Decrypted plaintext</h2>
+                <p>
+                    Successful decryption uses the appropriate key to recover
+                    the original readable information.
+                </p>
+
+                <pre id="decryptedOutput">Nothing decrypted.</pre>
+            </article>
+        </section>
+
+        <section class="card explanation">
+            <h2>What is happening?</h2>
+
+            <div class="flow">
+                <div>
+                    <strong>Plaintext</strong>
+                    <span>Readable information</span>
+                </div>
+
+                <span class="arrow">→</span>
+
+                <div>
+                    <strong>Encryption</strong>
+                    <span>Algorithm + key</span>
+                </div>
+
+                <span class="arrow">→</span>
+
+                <div>
+                    <strong>Ciphertext</strong>
+                    <span>Protected information</span>
+                </div>
+
+                <span class="arrow">→</span>
+
+                <div>
+                    <strong>Decryption</strong>
+                    <span>Key + algorithm</span>
+                </div>
+
+                <span class="arrow">→</span>
+
+                <div>
+                    <strong>Plaintext</strong>
+                    <span>Recovered information</span>
+                </div>
+            </div>
+
+            <div class="security-note">
+                <strong>Security note:</strong>
+                This browser demonstration uses the Web Crypto API with
+                AES-GCM. The displayed key is generated only for this
+                educational demonstration. Do not use displayed demo keys
+                for real secrets or production systems.
+            </div>
+        </section>
+
+        <section class="card">
+            <h2>Status</h2>
+            <p id="statusOutput" data-type="info">
+                Ready. Enter plaintext and begin the encryption demonstration.
+            </p>
+        </section>
+
+        <footer>
+            <p>
+                Day 20 of the Cryptography, Blockchain and Decentralized
+                Technologies Learning Journey
+            </p>
+        </footer>
+    </main>
+
+    <script src="app.js"></script>
+</body>
+</html>

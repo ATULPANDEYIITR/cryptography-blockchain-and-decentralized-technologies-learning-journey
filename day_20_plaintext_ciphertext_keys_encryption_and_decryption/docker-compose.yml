@@ -1,0 +1,5 @@
+services:
+  crypto-demo:
+    build: .
+    container_name: day20-crypto-demo
+    command: python src/encryption_demo.py

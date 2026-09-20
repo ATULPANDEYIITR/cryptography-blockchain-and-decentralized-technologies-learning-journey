@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "day-20-plaintext-ciphertext-keys-encryption-decryption"
+version = "1.0.0"
+description = "Educational demonstration of plaintext, ciphertext, cryptographic keys, encryption, and decryption."
+requires-python = ">=3.13"
+dependencies = [
+    "cryptography>=50.0,<51"
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+addopts = "-v"
