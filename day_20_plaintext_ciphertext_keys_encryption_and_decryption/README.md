@@ -1,202 +1,376 @@
 # Day 20: Plaintext, Ciphertext, Keys, Encryption and Decryption
 
+Educational cryptography utilities using **Fernet** from the Python `cryptography` package.
 
+Fernet provides **authenticated symmetric encryption**. The same secret key is required for both encryption and decryption.
 
-Educational cryptography utilities using Fernet from the Python
+This module intentionally uses a well-established cryptographic library instead of implementing a cryptographic algorithm manually.
 
-cryptography package.
+## Source Code
 
-
-
-Fernet provides authenticated symmetric encryption. The same secret
-
-key is required for both encryption and decryption.
-
-
-
-This module intentionally uses a well-established cryptographic
-
-library instead of implementing a cryptographic algorithm manually.
-
-from \_\_future\_\_ import annotations
+```
+from __future__ import annotations
 
 from cryptography.fernet import Fernet, InvalidToken
 
-def generate\_key() -> bytes:
 
-&#x20;   """Generate a new URL-safe 32-byte Fernet key."""
+def generate_key() -> bytes:
+    """Generate a new URL-safe 32-byte Fernet key."""
+    return Fernet.generate_key()
 
-&#x20;   return Fernet.generate\_key()
 
-def encrypt\_text(plaintext: str, key: bytes) -> str:
+def encrypt_text(plaintext: str, key: bytes) -> str:
+    """
+    Encrypt plaintext and return the ciphertext as a string.
 
-&#x20;   """
+    Parameters
+    ----------
+    plaintext:
+        The readable message that will be encrypted.
 
-&#x20;   Encrypt plaintext and return the ciphertext as a string.
+    key:
+        A valid Fernet key.
 
-&#x20;   Parameters
+    Returns
+    -------
+    str
+        Base64-encoded Fernet ciphertext.
+    """
+    if not isinstance(plaintext, str):
+        raise TypeError("plaintext must be a string")
 
-&#x20;   ----------
+    if not plaintext:
+        raise ValueError("plaintext cannot be empty")
 
-&#x20;   plaintext:
+    if not isinstance(key, bytes):
+        raise TypeError("key must be bytes")
 
-&#x20;       The readable message that will be encrypted.
+    cipher = Fernet(key)
+    ciphertext = cipher.encrypt(plaintext.encode("utf-8"))
 
-&#x20;   key:
+    return ciphertext.decode("utf-8")
 
-&#x20;       A valid Fernet key.
 
-&#x20;   Returns
+def decrypt_text(ciphertext: str, key: bytes) -> str:
+    """
+    Decrypt ciphertext and return the original plaintext.
 
-&#x20;   -------
+    Invalid keys and modified ciphertext raise ValueError instead
+    of exposing cryptographic implementation details to callers.
+    """
+    if not isinstance(ciphertext, str):
+        raise TypeError("ciphertext must be a string")
 
-&#x20;   str
+    if not ciphertext:
+        raise ValueError("ciphertext cannot be empty")
 
-&#x20;       Base64-encoded Fernet ciphertext.
+    if not isinstance(key, bytes):
+        raise TypeError("key must be bytes")
 
-&#x20;   """
+    cipher = Fernet(key)
 
-&#x20;   if not isinstance(plaintext, str):
+    try:
+        plaintext = cipher.decrypt(ciphertext.encode("utf-8"))
+    except InvalidToken as exc:
+        raise ValueError(
+            "Decryption failed: the key may be incorrect or "
+            "the ciphertext may have been modified."
+        ) from exc
 
-&#x20;       raise TypeError("plaintext must be a string")
+    return plaintext.decode("utf-8")
 
-&#x20;   if not plaintext:
 
-&#x20;       raise ValueError("plaintext cannot be empty")
+def demonstrate_round_trip(plaintext: str) -> dict[str, str]:
+    """
+    Perform a complete educational encryption/decryption round trip.
 
-&#x20;   if not isinstance(key, bytes):
+    Returns a dictionary containing the key, plaintext, ciphertext,
+    and recovered plaintext.
+    """
+    key = generate_key()
+    ciphertext = encrypt_text(plaintext, key)
+    recovered = decrypt_text(ciphertext, key)
 
-&#x20;       raise TypeError("key must be bytes")
+    return {
+        "key": key.decode("utf-8"),
+        "plaintext": plaintext,
+        "ciphertext": ciphertext,
+        "decrypted_plaintext": recovered,
+    }
 
-&#x20;   cipher = Fernet(key)
 
-&#x20;   ciphertext = cipher.encrypt(plaintext.encode("utf-8"))
+if __name__ == "__main__":
+    result = demonstrate_round_trip(
+        "Plaintext is transformed into ciphertext using a secret key."
+    )
 
-&#x20;   return ciphertext.decode("utf-8")
+    print("=== Day 20 Encryption Demonstration ===")
+    print()
 
-def decrypt\_text(ciphertext: str, key: bytes) -> str:
+    print(f"Plaintext:           {result['plaintext']}")
+    print(f"Encryption key:      {result['key']}")
+    print(f"Ciphertext:          {result['ciphertext']}")
+    print(f"Decrypted plaintext: {result['decrypted_plaintext']}")
 
-&#x20;   """
+    print()
 
-&#x20;   Decrypt ciphertext and return the original plaintext.
+    print(
+        "Round-trip successful:",
+        result["plaintext"] == result["decrypted_plaintext"],
+    )
+```
 
-&#x20;   Invalid keys and modified ciphertext raise ValueError instead
+## What the Code Demonstrates
 
-&#x20;   of exposing cryptographic implementation details to callers.
+### Key generation
 
-&#x20;   """
+`generate_key()` creates a new Fernet key using the cryptographic library's secure key-generation mechanism.
 
-&#x20;   if not isinstance(ciphertext, str):
+The key is represented as bytes:
 
-&#x20;       raise TypeError("ciphertext must be a string")
+```
+key = generate_key()
+```
 
+The key must be protected because anyone who obtains the required secret key may be able to decrypt data protected with that key.
 
+### Encryption
 
-&#x20;   if not ciphertext:
+`encrypt_text()` accepts readable plaintext and a secret key.
 
-&#x20;       raise ValueError("ciphertext cannot be empty")
+The plaintext is first converted into UTF-8 bytes:
 
+```
+plaintext.encode("utf-8")
+```
 
+Fernet then encrypts those bytes:
 
-&#x20;   if not isinstance(key, bytes):
+```
+ciphertext = cipher.encrypt(plaintext.encode("utf-8"))
+```
 
-&#x20;       raise TypeError("key must be bytes")
+The resulting encrypted bytes are converted into a string so that the ciphertext can be displayed and stored conveniently.
 
+The conceptual process is:
 
+```
+Plaintext + Secret Key
+        |
+        v
+    Encryption
+        |
+        v
+    Ciphertext
+```
 
-&#x20;   cipher = Fernet(key)
+### Decryption
 
+`decrypt_text()` performs the reverse operation.
 
+The ciphertext is converted back into bytes and passed to Fernet:
 
-&#x20;   try:
+```
+plaintext = cipher.decrypt(ciphertext.encode("utf-8"))
+```
 
-&#x20;       plaintext = cipher.decrypt(ciphertext.encode("utf-8"))
+If the correct key is supplied and the ciphertext is valid, the original plaintext is recovered.
 
-&#x20;   except InvalidToken as exc:
+The conceptual process is:
 
-&#x20;       raise ValueError(
+```
+Ciphertext + Secret Key
+        |
+        v
+    Decryption
+        |
+        v
+    Plaintext
+```
 
-&#x20;           "Decryption failed: the key may be incorrect or "
+### Wrong keys and modified ciphertext
 
-&#x20;           "the ciphertext may have been modified."
+The function catches `InvalidToken` and converts it into a simpler `ValueError`.
 
-&#x20;       ) from exc
+This can occur when:
 
+* the wrong key is supplied
+* the ciphertext has been modified
+* the ciphertext is invalid
+* authentication verification fails
 
+The caller therefore receives a clear application-level error instead of having to handle the underlying cryptographic exception directly.
 
-&#x20;   return plaintext.decode("utf-8")
+### Encryption and decryption round trip
 
+`demonstrate_round_trip()` combines the complete process:
 
+```
+key = generate_key()
 
+ciphertext = encrypt_text(plaintext, key)
 
+recovered = decrypt_text(ciphertext, key)
+```
 
-def demonstrate\_round\_trip(plaintext: str) -> dict\[str, str]:
+The resulting dictionary contains:
 
-&#x20;   """
+* the encryption key
+* the original plaintext
+* the ciphertext
+* the recovered plaintext
 
-&#x20;   Perform a complete educational encryption/decryption round trip.
+The demonstration can then verify that:
 
+```
+original plaintext == recovered plaintext
+```
 
+If the values are equal, the complete encryption and decryption round trip succeeded.
 
-&#x20;   Returns a dictionary containing the key, plaintext, ciphertext,
+## Important Security Concepts
 
-&#x20;   and recovered plaintext.
+### Plaintext
 
-&#x20;   """
+Plaintext is the original readable information before encryption.
 
-&#x20;   key = generate\_key()
+Example:
 
-&#x20;   ciphertext = encrypt\_text(plaintext, key)
+```
+Plaintext is transformed into ciphertext using a secret key.
+```
 
-&#x20;   recovered = decrypt\_text(ciphertext, key)
+### Ciphertext
 
+Ciphertext is the protected output produced by encryption.
 
+It is designed so that someone without the required cryptographic key cannot simply read the original message.
 
-&#x20;   return {
+### Key
 
-&#x20;       "key": key.decode("utf-8"),
+A cryptographic key is secret cryptographic material used by the encryption and decryption process.
 
-&#x20;       "plaintext": plaintext,
+For symmetric encryption, the same secret key is used for both operations.
 
-&#x20;       "ciphertext": ciphertext,
+### Encryption
 
-&#x20;       "decrypted\_plaintext": recovered,
+Encryption transforms plaintext into ciphertext.
 
-&#x20;   }
+```
+Plaintext -> Encryption -> Ciphertext
+```
 
+### Decryption
 
+Decryption transforms valid ciphertext back into plaintext.
 
+```
+Ciphertext -> Decryption -> Plaintext
+```
 
+### Authenticated encryption
 
-if \_\_name\_\_ == "\_\_main\_\_":
+Fernet provides confidentiality together with authentication and integrity protection.
 
-&#x20;   result = demonstrate\_round\_trip(
+This means the system does not only attempt to hide the plaintext. It also verifies that the protected data has not been altered and that the ciphertext is valid for the supplied key.
 
-&#x20;       "Plaintext is transformed into ciphertext using a secret key."
+## Why a Cryptographic Library Is Used
 
-&#x20;   )
+This project does not implement a new encryption algorithm.
 
+Implementing cryptography manually is dangerous because secure cryptographic systems require careful handling of:
 
+* algorithms
+* keys
+* randomness
+* authentication
+* integrity
+* serialization
+* encoding
+* error handling
+* implementation details
+* security vulnerabilities
 
-&#x20;   print("=== Day 20 Encryption Demonstration ===")
+Established cryptographic libraries are designed and reviewed specifically for these purposes.
 
-&#x20;   print()
+For educational projects, it is useful to understand the concepts while relying on established libraries for actual cryptographic operations.
 
-&#x20;   print(f"Plaintext:           {result\['plaintext']}")
+## Example Workflow
 
-&#x20;   print(f"Encryption key:      {result\['key']}")
+A complete encryption workflow can be represented as:
 
-&#x20;   print(f"Ciphertext:          {result\['ciphertext']}")
+```
+Original Message
+      |
+      v
+   Plaintext
+      |
+      | Secret Key
+      v
+  Encryption
+      |
+      v
+  Ciphertext
+      |
+      | Same Secret Key
+      v
+  Decryption
+      |
+      v
+   Plaintext
+      |
+      v
+Original Message
+```
 
-&#x20;   print(f"Decrypted plaintext: {result\['decrypted\_plaintext']}")
+The important relationship is:
 
-&#x20;   print()
+```
+Encryption:
+Plaintext + Key -> Ciphertext
 
-&#x20;   print(
+Decryption:
+Ciphertext + Key -> Plaintext
+```
 
-&#x20;       "Round-trip successful:",
+## Running the Demonstration
 
-&#x20;       result\["plaintext"] == result\["decrypted\_plaintext"],
+From the project root, run:
 
-&#x20;   )
+```
+python src\crypto_utils.py
+```
 
+The program generates a key, encrypts a sample plaintext, decrypts the ciphertext, and verifies that the recovered plaintext matches the original.
+
+A successful execution ends with a result similar to:
+
+```
+Round-trip successful: True
+```
+
+The generated key and ciphertext will change between executions because secure cryptographic systems use fresh values rather than producing identical encrypted output every time.
+
+## Learning Outcome
+
+After studying this module, a learner should understand the relationship between:
+
+```
+Plaintext
+    |
+    v
+Encryption + Key
+    |
+    v
+Ciphertext
+    |
+    v
+Decryption + Key
+    |
+    v
+Plaintext
+```
+
+The central idea is simple:
+
+**Encryption protects readable information by transforming it into ciphertext using cryptographic key material, while decryption uses the appropriate key to recover the original information.**
