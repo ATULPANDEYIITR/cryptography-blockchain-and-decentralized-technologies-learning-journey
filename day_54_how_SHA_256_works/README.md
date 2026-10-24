@@ -1,157 +1,332 @@
+# 🔐 SHA-256 Cryptographic Hashing
+### A Multi-Language Engineering Study: Python, JavaScript, C++17, Java 17, and PostgreSQL
+
+---
+
+## 📌 1. Project Overview
+
+SHA-256 is a cryptographic hash function belonging to the SHA-2 family. It transforms an arbitrary-length input byte sequence into a fixed-length, 256-bit digest.
+
 The central transformation is:
 
-`arbitrary-length message -> padded 512-bit blocks -> compression rounds -> 256-bit digest`
+```text
+╔══════════════════════════════════════════════════════╗
+║                 SHA-256 PIPELINE                     ║
+╚══════════════════════════════════════════════════════╝
 
-The five implementations approach the mechanism from different engineering perspectives:
+ Arbitrary-Length Message
+           │
+           ▼
+     Message Padding
+           │
+           ▼
+   512-Bit Message Blocks
+           │
+           ▼
+   16 Initial 32-Bit Words
+           │
+           ▼
+   64-Word Message Schedule
+           │
+           ▼
+    64 Compression Rounds
+           │
+           ▼
+   Chaining State Update
+           │
+           ▼
+     256-Bit Digest
+```
+
+The five implementations approach the mechanism from different engineering perspectives.
 
 | Implementation | Primary perspective | Main focus |
 |---|---|---|
-| Python | Algorithm model | Padding, schedule expansion, compression, testing |
-| JavaScript | Event-oriented systems programming | 32-bit arithmetic, buffers, runtime verification |
-| C++17 | Low-level implementation | Explicit state, memory layout, streaming interface |
-| Java 17 | Enterprise-oriented domain model | Type safety, validation, standard cryptographic verification |
-| PostgreSQL | Data-integrity workflow | Digest storage, validation, transactions, reporting |
+| Python | Algorithm modeling | Padding, schedule expansion, compression, and testing |
+| JavaScript | Runtime-oriented programming | 32-bit arithmetic, buffers, and verification |
+| C++17 | Low-level implementation | Explicit state, memory layout, and streaming |
+| Java 17 | Strongly typed application design | Validation, domain modeling, and cryptographic verification |
+| PostgreSQL | Data-integrity engineering | Digest storage, validation, transactions, and reporting |
 
-The implementations intentionally expose the SHA-256 compression process rather than treating the algorithm as a single library call.
+The implementations intentionally expose the SHA-256 compression process rather than treating the algorithm as a single library call. PostgreSQL is the exception: it uses the `pgcrypto` extension to provide the cryptographic digest operation and concentrates on database integrity.
 
-## What SHA-256 Does
+---
 
-A cryptographic hash function maps an input of arbitrary length to a fixed-size output.
+## 🎯 2. Project Objectives
 
-For SHA-256:
+This project demonstrates how SHA-256 works internally and how the same cryptographic mechanism can be applied across different programming environments.
 
-- Input: arbitrary byte sequence subject to the algorithm's length encoding
-- Block size: 512 bits, or 64 bytes
-- Word size: 32 bits
-- Digest size: 256 bits, or 32 bytes
-- Number of compression rounds per block: 64
-- Number of initial state words: 8
-- Final representation: eight 32-bit words
+The main objectives are to:
 
-A digest is not an encrypted version of the original message.
+- Understand the complete SHA-256 processing pipeline.
+- Implement message padding and 64-bit length encoding.
+- Expand 512-bit blocks into 64-word message schedules.
+- Implement the Boolean functions and bitwise rotation operations.
+- Perform 64 compression rounds per block.
+- Preserve 32-bit modular arithmetic across programming languages.
+- Process multi-block messages correctly.
+- Convert text into UTF-8 bytes before hashing.
+- Verify custom implementations against trusted cryptographic libraries.
+- Demonstrate the avalanche effect through Hamming-distance measurements.
+- Store and verify digests using PostgreSQL.
+- Distinguish integrity checking from encryption and authentication.
+- Identify the limitations of educational cryptographic implementations.
+
+---
+
+## 📐 3. SHA-256 at a Glance
+
+| Property | Value |
+|---|---|
+| Algorithm family | SHA-2 |
+| Standardized output | 256 bits |
+| Digest size | 32 bytes |
+| Hexadecimal digest length | 64 characters |
+| Block size | 512 bits |
+| Block size in bytes | 64 bytes |
+| Word size | 32 bits |
+| Initial state | Eight 32-bit words |
+| Compression rounds | 64 per block |
+| Initial message words | 16 |
+| Expanded message words | 64 |
+| Length field | 64-bit big-endian integer |
+| Arithmetic | Modulo \(2^{32}\) |
+| Input | Arbitrary byte sequence within the specification's length limit |
+| Output | Fixed-length digest |
+
+A digest is not an encrypted representation of the original message. SHA-256 is a one-way cryptographic hash function designed to provide properties such as preimage resistance and collision resistance.
+
+### Example
+
+Input:
+
+```text
+abc
+```
+
+Expected SHA-256 digest:
+
+```text
+ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad
+```
+
+The same input bytes always produce the same SHA-256 digest.
+
+---
+
+## ⚙️ 4. Core Processing Pipeline
+
+SHA-256 processes the input through six connected stages.
+
+### Stage 1: Input Encoding
+
+Text is converted into bytes before hashing.
+
+For example, the string `SHA-256` can be encoded using UTF-8.
+
+The algorithm operates on bytes, not on abstract characters.
+
+### Stage 2: Message Padding
+
+The input is extended until its length is a multiple of 512 bits.
+
+The original message length is encoded in the final 64 bits.
+
+### Stage 3: Block Division
+
+The padded message is divided into blocks of 64 bytes.
+
+Each block is processed independently by the compression function, while the chaining state connects successive blocks.
+
+### Stage 4: Message Schedule Expansion
+
+Each 512-bit block initially contains 16 words of 32 bits each.
+
+These words are expanded into a schedule of 64 words.
+
+### Stage 5: Compression
+
+The algorithm initializes eight working variables from the current state and performs 64 rounds of bitwise operations, modular additions, and state transitions.
+
+### Stage 6: State Update and Digest Generation
+
+After each block, the working variables are added to the previous state.
+
+Once all blocks have been processed, the eight state words form the final 256-bit digest.
+
+---
+
+## 🧩 5. Message Padding
+
+SHA-256 cannot directly process an arbitrary-length message as a single compression input. It first applies a standardized padding procedure.
+
+The steps are:
+
+1. Append a single `1` bit.
+2. Append zero bits until the message length is 64 bits short of a multiple of 512 bits.
+3. Append the original message length as a 64-bit big-endian integer.
+
+In byte-oriented implementations, the first step is represented by appending the byte `0x80`.
+
+Let \(L\) be the original message length in bytes. The number of zero-padding bytes \(k\) satisfies:
+
+\[
+(L+1+k+8)\bmod 64=0
+\]
+
+Equivalently:
+
+\[
+k=(56-(L+1)\bmod 64)\bmod 64
+\]
+
+The padded message length is therefore a multiple of 64 bytes.
+
+### Padding Structure
+
+```text
+┌───────────────────────────────┬───────────────────────┐
+│ Original Message              │ Padding and Length    │
+├───────────────────────────────┼───────────────────────┤
+│ Original bytes                │ 0x80                  │
+│                               │ Zero padding          │
+│                               │ 64-bit original length│
+└───────────────────────────────┴───────────────────────┘
+
+                 Total length: multiple of 64 bytes
+```
+
+### Why Padding Matters
+
+Padding ensures that every compression input has exactly 512 bits.
+
+It also incorporates the original message length into the standardized processing format.
+
+The Python, JavaScript, and Java implementations explicitly construct the padded representation. The C++ implementation performs the same operation during finalization. PostgreSQL converts the input to UTF-8 bytes before invoking `pgcrypto`.
+
+### Important Boundary Case
+
+Suppose an input leaves exactly eight bytes available in a block after the `0x80` byte has been appended.
+
+Those eight bytes are needed for the original length field, so the padding cannot fit in that block. A second block must be created.
+
+This is why padding must be calculated dynamically instead of appending a fixed number of zero bytes.
+
+---
+
+## 🔢 6. Processing 512-Bit Blocks
+
+After padding, the message is divided into 64-byte blocks.
+
+Each block contains 512 bits:
+
+\[
+512=16\times32
+\]
+
+The block is interpreted as sixteen 32-bit words.
+
+```text
+512-BIT MESSAGE BLOCK
+         │
+         ▼
+┌────┬────┬────┬────┬────┬────┬────┬────┐
+│ W0 │ W1 │ W2 │ W3 │ W4 │ W5 │ W6 │ W7 │
+├────┼────┼────┼────┼────┼────┼────┼────┤
+│ W8 │ W9 │ W10│ W11│ W12│ W13│ W14│ W15│
+└────┴────┴────┴────┴────┴────┴────┴────┘
+                     │
+                     ▼
+           Message Schedule Expansion
+                     │
+                     ▼
+           W0, W1, ... W63
+```
+
+The expanded schedule allows later compression rounds to depend on information distributed throughout the original block.
+
+### Big-Endian Interpretation
+
+SHA-256 interprets each four-byte word in big-endian order.
 
 For example:
 
-`abc`
-
-produces:
-
-`ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad`
-
-The fixed-size output is one of the defining properties of a cryptographic hash.
-
-## Core Processing Pipeline
-
-The algorithm can be viewed as six connected stages.
-
 ```text
-Input bytes
-    |
-    v
-Append 1 bit and zero padding
-    |
-    v
-Append original length as 64-bit big-endian value
-    |
-    v
-Split into 512-bit blocks
-    |
-    v
-Expand each block into 64 words
-    |
-    v
-Run 64 compression rounds
-    |
-    v
-Add compressed state back into chaining state
-    |
-    v
-256-bit digest
+Bytes: 01 02 03 04
+Word:  0x01020304
+```
 
-The digest depends on every processed block because the state produced by one block becomes the starting state for the next block.
+This interpretation must be implemented explicitly because the host processor may use a different native byte order.
 
-## Message Padding
+---
 
-SHA-256 does not process arbitrary-length input directly.
+## 🧮 7. Message Schedule Expansion
 
-The message is extended so that its final length is a multiple of 512 bits.
+The message schedule contains 64 words:
 
-The padding procedure is:
+\[
+W_0,W_1,\ldots,W_{63}
+\]
 
-1. Append a single `1` bit.
-2. Append zero bits until 64 bits remain in the current 512-bit block.
-3. Append the original message length as a 64-bit big-endian integer.
+The first sixteen words come directly from the input block.
 
-In byte-oriented implementations, the first step is represented by appending `0x80`.
+For \(t\geq16\), the remaining words are calculated using:
 
-For a message whose byte length is `L`, the padded message satisfies:
-
-`(L + 1 + zero_padding + 8) mod 64 = 0`
-
-The final eight bytes contain the original bit length.
-
-The Python, JavaScript, and Java implementations explicitly construct this representation. The C++ implementation performs the same transformation in its finalization stage. PostgreSQL makes the UTF-8 byte representation explicit before passing it to `pgcrypto`.
-
-## Why the Length Is Included
-
-Without the encoded original length, the final block would not have a complete description of where the original message ended.
-
-The length field also forms part of the domain separation created by the standardized padding construction.
-
-For SHA-256, the length is encoded as an unsigned 64-bit value in big-endian order.
-
-## 512-Bit Blocks
-
-After padding, the message is divided into blocks of 64 bytes.
-
-Each block contains sixteen 32-bit words:
-
-    512-bit block
-    |
-    +-- W0
-    +-- W1
-    +-- W2
-    ...
-    +-- W15
-
-Those sixteen words are expanded into a 64-word message schedule:
-
-    W0 ... W15
-         |
-         v
-    W16 ... W63
-
-The expanded schedule ensures that later rounds depend on information distributed across the entire original block.
-
-## Message Schedule
-
-For positions `0` through `15`, the schedule contains the original block words.
-
-For `t >= 16`:
-
-`W[t] = σ1(W[t-2]) + W[t-7] + σ0(W[t-15]) + W[t-16]`
-
-The additions operate modulo `2^32`.
+\[
+W_t =
+\sigma_1(W_{t-2})+
+W_{t-7}+
+\sigma_0(W_{t-15})+
+W_{t-16}
+\pmod {2^{32}}
+\]
 
 The small sigma functions are:
 
-`σ0(x) = ROTR7(x) XOR ROTR18(x) XOR SHR3(x)`
+\[
+\sigma_0(x)=
+\operatorname{ROTR}^{7}(x)
+\oplus
+\operatorname{ROTR}^{18}(x)
+\oplus
+\operatorname{SHR}^{3}(x)
+\]
 
-`σ1(x) = ROTR17(x) XOR ROTR19(x) XOR SHR10(x)`
+\[
+\sigma_1(x)=
+\operatorname{ROTR}^{17}(x)
+\oplus
+\operatorname{ROTR}^{19}(x)
+\oplus
+\operatorname{SHR}^{10}(x)
+\]
 
-Here:
+Where:
 
-- `ROTR` means rotate right
-- `SHR` means logical shift right
-- `XOR` means exclusive OR
+- `ROTR` means rotate right.
+- `SHR` means logical shift right.
+- \(\oplus\) means exclusive OR.
+- All schedule additions are performed modulo \(2^{32}\).
 
-The Python implementation represents the schedule as a list of 64 integers. JavaScript uses `Uint32Array`. C++ uses `std::array<std::uint32_t, 64>`. Java uses an `int[64]`, where Java's defined 32-bit integer overflow supplies the required modulo-`2^32` behavior.
+### Implementation Differences
 
-## Initial Hash State
+| Language | Representation |
+|---|---|
+| Python | List of 64 integers with explicit 32-bit masking |
+| JavaScript | `Uint32Array` with explicit unsigned conversion |
+| C++17 | `std::array<std::uint32_t, 64>` |
+| Java 17 | `int[64]` with defined 32-bit integer overflow |
+| PostgreSQL | Schedule expansion is handled internally by `pgcrypto` |
 
-SHA-256 starts with eight predefined 32-bit words:
+Java's signed `int` representation does not prevent it from implementing SHA-256. Bitwise operations work on the 32-bit representation, and integer overflow preserves the required low-order 32 bits.
 
-| State word | Initial value |
+---
+
+## 🔐 8. Initial Hash State
+
+SHA-256 begins with eight predefined 32-bit state words.
+
+| State word | Initial hexadecimal value |
 |---|---|
 | H0 | `6A09E667` |
 | H1 | `BB67AE85` |
@@ -162,655 +337,1102 @@ SHA-256 starts with eight predefined 32-bit words:
 | H6 | `1F83D9AB` |
 | H7 | `5BE0CD19` |
 
-The eight words form a 256-bit chaining state.
+Together, these eight words form a 256-bit chaining state.
 
-For each message block, this state is copied into working variables:
+For each message block, the current state is copied into eight working variables:
 
-`a, b, c, d, e, f, g, h`
+\[
+a,b,c,d,e,f,g,h
+\]
 
-The compression function transforms these variables for 64 rounds.
+The compression function updates these variables for 64 rounds.
 
-## The Choice Function
+The initial state is defined by the SHA-256 specification and must not be replaced with arbitrary values when implementing the standard algorithm.
 
-SHA-256 uses:
+---
 
-`Ch(x,y,z) = (x AND y) XOR ((NOT x) AND z)`
+## 🧠 9. Boolean Functions
 
-The function selects bits from `y` or `z` depending on the corresponding bits of `x`.
+SHA-256 uses two important Boolean functions: `Ch` and `Maj`.
 
-It creates a data-dependent selection operation that contributes to the nonlinear behavior of the compression function.
+### 9.1 Choice Function
 
-## The Majority Function
+\[
+\operatorname{Ch}(x,y,z)=
+(x\land y)\oplus(\neg x\land z)
+\]
 
-The second Boolean primitive is:
+For each bit position, the function selects a bit from \(y\) or \(z\) according to the corresponding bit of \(x\).
 
-`Maj(x,y,z) = (x AND y) XOR (x AND z) XOR (y AND z)`
+It contributes to the nonlinear behavior of the compression function.
 
-For every bit position, the result corresponds to the value held by at least two of the three inputs.
+### 9.2 Majority Function
 
-`Ch` primarily appears in the `e` side of the round transformation, while `Maj` appears in the `a` side.
+\[
+\operatorname{Maj}(x,y,z)=
+(x\land y)\oplus(x\land z)\oplus(y\land z)
+\]
 
-## Big Sigma Functions
+For each bit position, the result is the bit value held by at least two of the three inputs.
 
-The compression rounds use:
+The choice function is used on the `e` side of the compression round, while the majority function is used on the `a` side.
 
-`Σ0(x) = ROTR2(x) XOR ROTR13(x) XOR ROTR22(x)`
+---
 
-`Σ1(x) = ROTR6(x) XOR ROTR11(x) XOR ROTR25(x)`
+## 🔄 10. Big Sigma Functions
 
-These operations combine rotations with XOR to distribute bit influence across positions.
+The compression rounds use two additional functions:
 
-The algorithm intentionally uses 32-bit words. Implementations must therefore preserve unsigned 32-bit semantics even when the host language represents integers differently.
+\[
+\Sigma_0(x)=
+\operatorname{ROTR}^{2}(x)
+\oplus
+\operatorname{ROTR}^{13}(x)
+\oplus
+\operatorname{ROTR}^{22}(x)
+\]
 
-## Compression Round
+\[
+\Sigma_1(x)=
+\operatorname{ROTR}^{6}(x)
+\oplus
+\operatorname{ROTR}^{11}(x)
+\oplus
+\operatorname{ROTR}^{25}(x)
+\]
 
-For round `t`, SHA-256 calculates:
+These functions differ from the small sigma functions used during message schedule expansion.
 
-`T1 = h + Σ1(e) + Ch(e,f,g) + K[t] + W[t]`
-
-`T2 = Σ0(a) + Maj(a,b,c)`
-
-Then the working variables shift:
-
-    h <- g
-    g <- f
-    f <- e
-    e <- d + T1
-    d <- c
-    c <- b
-    b <- a
-    a <- T1 + T2
-
-All additions are modulo `2^32`.
-
-The 64 constants `K[t]` are fixed parts of the SHA-256 specification.
-
-## State Update
-
-After all 64 rounds for a block, the resulting working variables are added to the previous chaining state:
-
-    H0 <- H0 + a
-    H1 <- H1 + b
-    H2 <- H2 + c
-    H3 <- H3 + d
-    H4 <- H4 + e
-    H5 <- H5 + f
-    H6 <- H6 + g
-    H7 <- H7 + h
-
-The resulting state becomes the input state for the next 512-bit block.
-
-This chaining mechanism is why the final digest depends on the sequence of all processed blocks.
-
-## Python Implementation
-
-The Python implementation presents the algorithm as a direct functional model.
-
-Important components include:
-
-| Component | Implementation |
+| Function | Purpose |
 |---|---|
-| 32-bit rotation | `rotr32()` |
-| Boolean primitives | `ch()` and `maj()` |
-| Sigma functions | Four dedicated functions |
-| Padding | `pad_message()` |
-| Schedule | `build_schedule()` |
-| Compression | `compress()` |
-| Full hash | `sha256_bytes()` |
-| Text interface | `sha256_hex()` |
-| Verification | `hashlib` comparison |
-| Avalanche experiment | `avalanche_experiment()` |
+| \(\sigma_0\) | Message schedule expansion |
+| \(\sigma_1\) | Message schedule expansion |
+| \(\Sigma_0\) | Compression round transformation |
+| \(\Sigma_1\) | Compression round transformation |
 
-The implementation intentionally does not call `hashlib.sha256()` to calculate its primary result. `hashlib` is used separately as an independent verification mechanism.
+The big sigma functions use rotations and XOR to redistribute bit influence across word positions.
 
-The randomized tests compare many randomly generated messages against the standard-library implementation. This is useful because a SHA-256 implementation can produce correct results for short examples while still containing an error in padding, word ordering, rotation, or multi-block processing.
+Correct rotation counts and correct distinctions between the small and big sigma functions are essential to matching the standardized SHA-256 output.
 
-## JavaScript Implementation
+---
 
-The JavaScript implementation uses Node.js standard-library facilities and emphasizes explicit 32-bit operations.
+## ⚡ 11. Compression Rounds
 
-JavaScript's ordinary numeric type is IEEE-754 double precision, so the implementation uses operations such as:
+Each block undergoes 64 compression rounds.
 
-- `>>>`
-- `Uint32Array`
-- `Buffer`
-- explicit `>>> 0`
-- modular addition through `add32()`
+For round \(t\), two temporary values are calculated:
 
-The `Buffer` type is particularly appropriate for SHA-256 because the algorithm operates on bytes rather than abstract characters.
+\[
+T_1=
+h+\Sigma_1(e)+\operatorname{Ch}(e,f,g)+K_t+W_t
+\pmod {2^{32}}
+\]
 
-Node's `crypto` module is used only for independent verification and randomized testing.
+\[
+T_2=
+\Sigma_0(a)+\operatorname{Maj}(a,b,c)
+\pmod {2^{32}}
+\]
 
-The implementation also exposes an avalanche experiment by modifying a single input bit and comparing the two 256-bit outputs.
+Here:
 
-## C++17 Implementation
+- \(K_t\) is the fixed round constant.
+- \(W_t\) is the corresponding message schedule word.
+- \(T_1\) and \(T_2\) are temporary 32-bit values.
+
+The working variables are then updated:
+
+```text
+h ← g
+g ← f
+f ← e
+e ← d + T1
+d ← c
+c ← b
+b ← a
+a ← T1 + T2
+```
+
+Every addition is performed modulo \(2^{32}\).
+
+### Round Structure
+
+```text
+             Current Working State
+        a  b  c  d  e  f  g  h
+                         │
+             ┌───────────┴───────────┐
+             │                       │
+             ▼                       ▼
+         Sigma 1(e)              Sigma 0(a)
+             │                       │
+             ▼                       ▼
+       Choice(e,f,g)            Majority(a,b,c)
+             │                       │
+             ▼                       ▼
+      Round Constant K[t]              │
+             │                       │
+      Schedule Word W[t]               │
+             │                       │
+             ▼                       ▼
+             T1                      T2
+              \                      /
+               \                    /
+                ▼                  ▼
+                  State Transition
+                         │
+                         ▼
+                  Next Round State
+```
+
+The 64 round constants are fixed values defined by the SHA-256 specification.
+
+---
+
+## 🔗 12. State Update
+
+After all 64 rounds, the working variables are added to the previous chaining state.
+
+```text
+H0 ← H0 + a
+H1 ← H1 + b
+H2 ← H2 + c
+H3 ← H3 + d
+H4 ← H4 + e
+H5 ← H5 + f
+H6 ← H6 + g
+H7 ← H7 + h
+```
+
+All additions are performed modulo \(2^{32}\).
+
+The updated state becomes the starting state for the next message block.
+
+For a message containing multiple blocks, each state update carries information from the preceding blocks into subsequent processing.
+
+The final eight state words are concatenated in order to form the 256-bit digest.
+
+---
+
+## 🐍 13. Python Implementation
+
+The Python implementation presents SHA-256 as a direct functional model.
+
+### Main Components
+
+| Component | Responsibility |
+|---|---|
+| `rotr32()` | Performs 32-bit rotation |
+| `ch()` | Implements the choice function |
+| `maj()` | Implements the majority function |
+| Sigma functions | Implement the four rotation-based functions |
+| `pad_message()` | Constructs the padded byte sequence |
+| `build_schedule()` | Expands each block into 64 words |
+| `compress()` | Executes the compression rounds |
+| `sha256_bytes()` | Calculates the digest of bytes |
+| `sha256_hex()` | Provides hexadecimal output |
+| `hashlib` comparison | Independently verifies results |
+| `avalanche_experiment()` | Measures output-bit changes |
+
+### Engineering Perspective
+
+Python makes the mathematical structure easy to follow.
+
+The implementation can expose every stage of the algorithm without relying on a built-in hash operation for its primary calculation.
+
+The standard-library `hashlib` implementation is used separately as a reference for verification.
+
+### Testing
+
+The implementation should include:
+
+- Known-answer tests.
+- Empty-message testing.
+- UTF-8 text testing.
+- Block-boundary tests.
+- Multi-block tests.
+- Randomized comparisons against `hashlib.sha256`.
+- Avalanche-effect experiments.
+
+Randomized testing helps detect errors in padding, byte ordering, rotation, modular arithmetic, and multi-block processing.
+
+---
+
+## 🟨 14. JavaScript Implementation
+
+The JavaScript implementation uses Node.js and emphasizes explicit 32-bit operations.
+
+JavaScript's ordinary `Number` type uses IEEE-754 double-precision floating-point representation. It is therefore important to control the behavior of arithmetic and bitwise operations when implementing SHA-256.
+
+### Main Components
+
+| Component | Responsibility |
+|---|---|
+| `Buffer` | Stores input bytes |
+| `Uint32Array` | Stores the message schedule |
+| `>>>` | Performs logical right shifts |
+| `add32()` | Preserves unsigned 32-bit results |
+| Padding function | Constructs the final block representation |
+| Compression function | Executes the 64 rounds |
+| `crypto` module | Provides independent verification |
+
+### Engineering Perspective
+
+The `Buffer` type is suitable for SHA-256 because the algorithm operates on bytes rather than language-level characters.
+
+The implementation uses explicit unsigned conversions and controlled 32-bit operations to avoid JavaScript numeric-representation errors.
+
+Node.js `crypto` is used as an independent verification mechanism rather than as a replacement for the custom compression implementation.
+
+### Testing
+
+The JavaScript program should verify:
+
+- Known SHA-256 vectors.
+- Empty input.
+- ASCII and non-ASCII text.
+- Inputs that cross block boundaries.
+- Randomized byte arrays.
+- Output consistency with Node.js `crypto`.
+- Avalanche behavior after changing a single input bit.
+
+---
+
+## ⚙️ 15. C++17 Implementation
 
 The C++ implementation models SHA-256 as a reusable streaming class.
 
+### Internal State
+
 The `SHA256` class maintains:
 
-- eight-word internal state
-- an incomplete input buffer
-- total processed byte count
+- Eight 32-bit state words.
+- An incomplete input buffer.
+- The number of input bytes received.
+- The logic needed to finalize the hash.
 
-The `update()` method accepts data incrementally. A full 64-byte block is immediately compressed.
+### Streaming Interface
 
-This creates a realistic distinction between:
+The primary operations are conceptually:
 
-`update(data)`
+```cpp
+update(data);
+final();
+```
 
-and:
+`update()` accepts input incrementally and compresses each complete 64-byte block.
 
-`final()`
+`final()` processes the remaining bytes, appends padding, encodes the original length, and performs the final compression operations.
 
-The finalization operation handles the remaining bytes, padding, length encoding, and final compression blocks.
+This design allows large inputs to be processed without retaining the entire message in memory.
 
-C++ is particularly suitable for exposing the low-level characteristics of SHA-256 because `std::uint32_t` gives an explicit 32-bit unsigned representation.
+### Engineering Perspective
 
-The implementation also avoids external cryptographic libraries so that the compression logic remains visible.
+C++17 is well suited to demonstrating the low-level characteristics of SHA-256.
 
-## Java 17 Implementation
+The type `std::uint32_t` explicitly represents a 32-bit unsigned integer, making the intended word size clear.
 
-The Java implementation models the algorithm with explicit methods while using Java's standard library for byte encoding and independent verification.
+A streaming implementation also distinguishes the lifecycle of a hash operation from the mechanics of processing a single block.
 
-Java `int` is exactly 32 bits, which is convenient for SHA-256. Java integer overflow wraps around in two's-complement arithmetic, corresponding to modulo `2^32` for the unsigned word operations used by SHA-256.
+### Important Implementation Requirements
 
-Important components include:
+- Use explicit big-endian word loading.
+- Preserve the original input length.
+- Apply padding only during finalization.
+- Correctly handle incomplete blocks.
+- Prevent unintended reuse of finalized state.
+- Compare results against a trusted cryptographic implementation during testing.
 
-- `pad()`
-- `compress()`
-- `hash(byte[])`
-- `hash(String)`
-- `hammingDistance()`
-- known-answer tests
-- JDK `MessageDigest` verification
+The educational implementation avoids external cryptographic libraries in its compression logic so that the algorithm remains visible.
 
-`MessageDigest` is not used to replace the educational compression implementation. It acts as a reference implementation for detecting mistakes.
+---
 
-## PostgreSQL Implementation
+## ☕ 16. Java 17 Implementation
 
-The PostgreSQL implementation treats SHA-256 as a database integrity mechanism rather than reproducing the compression algorithm in procedural SQL.
+The Java implementation combines explicit SHA-256 compression logic with Java's standard byte-encoding and cryptographic facilities.
 
-The `pgcrypto` extension supplies the database's cryptographic digest operation.
+### Main Components
 
-The relational model contains:
+| Component | Responsibility |
+|---|---|
+| `pad()` | Constructs the padded message |
+| `compress()` | Processes a 512-bit block |
+| `hash(byte[])` | Hashes an arbitrary byte sequence |
+| `hash(String)` | Hashes text encoded as UTF-8 |
+| `hammingDistance()` | Counts differing output bits |
+| `MessageDigest` | Independently verifies results |
 
-    hash_messages
-          |
-          +---- verification_runs
-          |
-          +---- avalanche_experiments
+### Engineering Perspective
 
-`hash_messages` stores:
+Java's `int` type is exactly 32 bits, making it useful for implementing SHA-256 word operations.
 
-- original text
-- UTF-8 byte representation
-- algorithm
-- raw 32-byte digest
-- generated hexadecimal digest
-- byte length
-- creation timestamp
+Java integer overflow wraps around in two's-complement arithmetic. The low-order 32 bits therefore provide the modular results required by SHA-256 when arithmetic is performed consistently.
 
-The database constraint:
+The `MessageDigest` API supplies a trusted comparison point without replacing the educational compression logic.
 
-`message_bytes = convert_to(message_text, 'UTF8')`
+### Validation
 
-makes the relationship between the logical text and the actual hashed bytes explicit.
+The implementation should include:
 
-## Raw Digest Versus Hexadecimal Digest
+- Null-input validation.
+- Known-answer tests.
+- UTF-8 text tests.
+- Multi-block tests.
+- Block-boundary tests.
+- Comparison against JDK `MessageDigest`.
+- Hamming-distance calculations.
 
-A SHA-256 digest contains 32 bytes.
+---
 
-Hexadecimal encoding represents those 32 bytes using 64 characters.
+## 🐘 17. PostgreSQL Implementation
 
-For example:
+The PostgreSQL implementation treats SHA-256 as a database-integrity mechanism rather than reproducing the compression algorithm in procedural SQL.
 
-`32 bytes -> 64 hexadecimal characters`
+The `pgcrypto` extension provides the digest operation.
 
-The PostgreSQL model stores the raw digest in `BYTEA` because it is the compact representation.
+The database layer focuses on consistent byte representation, digest storage, integrity validation, audit records, and reporting.
 
-A generated `TEXT` column provides hexadecimal output for reporting and interoperability.
+### Conceptual Data Model
 
-This distinction matters when comparing storage formats and designing indexes.
+```text
+                 ┌──────────────────────┐
+                 │    hash_messages      │
+                 ├──────────────────────┤
+                 │ Message ID            │
+                 │ Original text         │
+                 │ UTF-8 bytes           │
+                 │ Algorithm             │
+                 │ Raw digest            │
+                 │ Hexadecimal digest    │
+                 │ Byte length           │
+                 │ Creation timestamp    │
+                 └──────────┬───────────┘
+                            │
+                ┌───────────┴───────────┐
+                ▼                       ▼
+      ┌──────────────────┐    ┌────────────────────┐
+      │ verification_runs│    │avalanche_experiments│
+      ├──────────────────┤    ├────────────────────┤
+      │ Verification ID  │    │ Experiment ID      │
+      │ Message ID       │    │ Original digest    │
+      │ Expected digest  │    │ Modified digest    │
+      │ Actual digest    │    │ Hamming distance   │
+      │ Verification     │    │ Experiment time    │
+      │ Timestamp        │    │                    │
+      └──────────────────┘    └────────────────────┘
+```
 
-## Database-Level Integrity
+### Message Storage
 
-The PostgreSQL trigger verifies that a stored digest actually corresponds to the stored message.
+The `hash_messages` table can store:
 
-The trigger calls:
+- Original text.
+- UTF-8 byte representation.
+- Hash algorithm identifier.
+- Raw 32-byte digest.
+- Hexadecimal digest.
+- Input byte length.
+- Creation timestamp.
 
-`calculate_sha256(NEW.message_text)`
+The relationship between the original text and its byte representation can be expressed using:
 
-and rejects the row when the supplied digest does not match.
+```sql
+message_bytes = convert_to(message_text, 'UTF8')
+```
 
-This protects against an application that accidentally writes:
+This ensures that the database's byte representation matches the selected text encoding.
 
-    message = A
-    digest = hash(B)
+### Raw Digest Versus Hexadecimal Digest
 
-Database constraints and triggers are valuable here because application-level validation alone can be bypassed by another writer or an incorrect integration.
+A SHA-256 digest consists of 32 bytes.
 
-## Verification Workflow
+Hexadecimal representation uses two characters for every byte, producing 64 hexadecimal characters.
 
-The database models verification as a separate event.
+```text
+32 raw bytes
+     │
+     ▼
+Hexadecimal encoding
+     │
+     ▼
+64 hexadecimal characters
+```
 
-    Stored message
-          |
-          v
-    Recalculate SHA-256
-          |
-          v
-    Compare with supplied digest
-          |
-          +---- match ----> verified
-          |
-          +---- mismatch -> mismatch
+The raw digest can be stored in PostgreSQL's `BYTEA` type. Hexadecimal output can be generated for reporting and interoperability.
 
-This separates the immutable content record from individual verification attempts.
+### Database-Level Integrity
 
-A mismatch record is retained instead of silently discarded. That creates an audit trail for integrity failures.
+A trigger or controlled database operation can recalculate the digest from the stored message and reject a row if the supplied digest does not match.
 
-## Avalanche Effect
+Conceptually:
+
+```text
+Incoming message and digest
+             │
+             ▼
+Recalculate SHA-256
+             │
+             ▼
+Compare calculated and supplied digests
+             │
+       ┌─────┴─────┐
+       ▼           ▼
+     Match       Mismatch
+       │           │
+       ▼           ▼
+    Accept       Reject
+```
+
+This helps prevent a faulty application from storing a message and an unrelated digest.
+
+A trigger that validates the digest on insert or update should be designed together with suitable constraints and permissions. Database validation is useful, but it does not replace appropriate access controls or a trusted method of authenticating data.
+
+### Verification Records
+
+Verification should be modeled separately from the stored message.
+
+Each verification event can record:
+
+- The message being checked.
+- The expected digest.
+- The calculated digest.
+- Whether the digests match.
+- The verification timestamp.
+
+Retaining failed verification attempts can provide an audit trail for integrity failures.
+
+### Transactions
+
+PostgreSQL transactions help ensure that related database changes are committed or rolled back together.
+
+For example, a workflow that inserts a message and creates its verification record can use a transaction so that a partial operation does not leave inconsistent records.
+
+A transaction does not make SHA-256 more cryptographically secure. It protects the consistency of the database workflow.
+
+---
+
+## 🌊 18. Avalanche Effect
 
 A cryptographic hash should exhibit a strong avalanche effect.
 
 A small change in the input should produce a substantially different output.
 
-The implementations change one input bit and calculate the Hamming distance between the two 256-bit digests.
+The experiment modifies one input bit and calculates both digests.
 
-The distance is:
+The Hamming distance is the number of bit positions that differ between the two outputs.
 
-`number of different output bits`
+\[
+d_H(x,y)=\operatorname{popcount}(x\oplus y)
+\]
 
-For two unrelated-looking 256-bit outputs, a value near half the output width is expected statistically.
+For SHA-256, the output contains 256 bits.
 
-The experiment does not prove cryptographic security. It provides an observable demonstration of diffusion.
+For two outputs that behave like independent, uniformly distributed 256-bit values, the expected Hamming distance is:
 
-## Multi-Block Messages
+\[
+E[d_H]=256\times\frac12=128
+\]
 
-The algorithm is not limited to messages shorter than one block.
+This is a statistical expectation, not a requirement that every experiment return exactly 128.
 
-For a larger message:
+### Experiment Workflow
 
-    Message
-      |
-      +-- Block 0 -> State 0
-      |
-      +-- Block 1 -> State 1
-      |
-      +-- Block 2 -> State 2
-      |
-      +-- ...
-      |
-      +-- Final block -> Final state
+```text
+Original Input
+      │
+      ├─────────────────┐
+      ▼                 ▼
+Original Digest     Modified Input
+                        │
+                        ▼
+                  Modified Digest
+      │                 │
+      └────────┬────────┘
+               ▼
+        Compare 256 Bits
+               │
+               ▼
+       Calculate Hamming
+           Distance
+```
 
-Each block modifies the chaining state.
+### Interpretation
 
-The C++ implementation exposes this behavior naturally through its streaming `update()` method. The Python, JavaScript, and Java implementations process the padded representation block by block.
+A distance near half the output width is consistent with strong bit diffusion in that experiment.
 
-## UTF-8 and Byte-Level Hashing
+The experiment does not prove cryptographic security. It demonstrates an observable property of the hash function.
+
+---
+
+## 🔁 19. Multi-Block Messages
+
+SHA-256 supports messages longer than one 64-byte block.
+
+The chaining state connects the blocks:
+
+```text
+Message
+   │
+   ▼
+Block 0 ──► Compression ──► State 0
+                                  │
+                                  ▼
+Block 1 ──► Compression ──► State 1
+                                  │
+                                  ▼
+Block 2 ──► Compression ──► State 2
+                                  │
+                                 ...
+                                  │
+                                  ▼
+                           Final Block
+                                  │
+                                  ▼
+                           Final Digest
+```
+
+Each block modifies the chaining state, and that state becomes the input state for the next block.
+
+The Python, JavaScript, and Java implementations process the padded message block by block.
+
+The C++ implementation exposes this naturally through its streaming `update()` interface.
+
+The PostgreSQL implementation delegates block processing to `pgcrypto`.
+
+---
+
+## 🌍 20. UTF-8 and Byte-Level Hashing
 
 SHA-256 hashes bytes, not programming-language strings.
 
-The text:
+The text `SHA-256` must first be encoded into a byte sequence.
 
-`SHA-256`
+The implementations use UTF-8 for text input.
 
-must first be converted to a byte sequence.
+| Environment | UTF-8 conversion |
+|---|---|
+| Python | `text.encode("utf-8")` |
+| JavaScript | `Buffer.from(text, "utf8")` |
+| C++17 | Explicit byte sequence supplied to the hash |
+| Java 17 | `StandardCharsets.UTF_8` |
+| PostgreSQL | `convert_to(text, 'UTF8')` |
 
-The implementations use UTF-8 for text inputs.
+### Why This Matters
 
-This matters for non-ASCII characters because different encodings produce different byte sequences and therefore different digests.
+Different encodings can produce different byte sequences for the same logical text.
 
-The PostgreSQL implementation makes the conversion explicit with:
+Different byte sequences produce different SHA-256 digests.
 
-`convert_to(text, 'UTF8')`
+When comparing hashes across programming languages or databases, the input encoding and byte sequence must match exactly.
 
-The JavaScript implementation uses `Buffer.from(text, 'utf8')`.
+For binary files, the safest approach is to hash the original bytes rather than convert the content to text.
 
-The Java implementation uses `StandardCharsets.UTF_8`.
+---
 
-## Hashing Is Not Encryption
+## 🛡️ 21. Hashing Is Not Encryption
 
-Encryption is designed to be reversible when the appropriate key is available.
+Encryption and hashing serve different purposes.
 
-Hashing is designed to produce a fixed-size output from which recovering the original message is computationally infeasible under the intended security assumptions.
+Encryption is designed to protect confidentiality and is generally reversible when the appropriate key is available.
+
+SHA-256 produces a fixed-size digest and is not designed to be reversed.
 
 | Property | Encryption | SHA-256 |
 |---|---|---|
 | Primary purpose | Confidentiality | Integrity and fingerprinting |
-| Reversible with key | Yes | No |
+| Reversible with a key | Yes | No |
 | Fixed-size output | Usually no | Yes |
 | Secret key required | Usually | No |
-| Suitable for file integrity | Indirectly | Yes |
+| Useful for file integrity | Yes, in suitable systems | Yes |
 | Suitable for password storage alone | No | No |
 
-A SHA-256 digest does not hide information in the same sense as encryption.
+A SHA-256 digest does not conceal information in the same way as encryption.
 
-## Collision Resistance
+A short or predictable input may be recovered through guessing, even when the hash function itself is operating correctly.
 
-A collision occurs when two distinct inputs produce the same digest.
+---
 
-Because SHA-256 has 256 output bits, there are only `2^256` possible digest values even though the input space is much larger.
+## 🔎 22. Collision Resistance
 
-Therefore collisions must exist mathematically.
+A collision occurs when two different inputs produce the same digest.
 
-Cryptographic collision resistance means finding a practical collision should be computationally infeasible under the algorithm's intended security assumptions.
+For SHA-256:
 
-This distinction is important:
+\[
+|\text{Digest Space}|=2^{256}
+\]
 
-`collisions exist` does not imply `collisions are practically discoverable`.
+The input space is much larger than the digest space, so collisions must exist mathematically.
 
-## Preimage Resistance
+Collision resistance means that finding a collision should be computationally infeasible under the algorithm's intended security assumptions.
 
-Given a digest:
+The distinction is important:
 
-`h`
+```text
+Collisions must exist
+         ≠
+Collisions are practically discoverable
+```
 
-a preimage attack attempts to find an input:
+For an ideal 256-bit hash, generic collision searches have an approximate birthday-bound work factor of \(2^{128}\) hash operations.
 
-`m`
+This is a theoretical reference, not a guarantee about every real-world system or attack model.
 
-such that:
+---
 
-`SHA-256(m) = h`
+## 🔐 23. Preimage Resistance
 
-The intended security property is that recovering such an input should require computational work that is infeasible for properly selected targets.
+Given a digest \(h\), a preimage attack attempts to find a message \(m\) satisfying:
 
-This does not mean every input is secret. If an attacker knows the input is one of a small set of possibilities, they can hash each candidate.
+\[
+\operatorname{SHA256}(m)=h
+\]
 
-For example, hashing a short public word does not make the word confidential.
+SHA-256 is designed to make recovering such a message computationally infeasible for appropriately selected targets under the intended security assumptions.
 
-## Password Security
+This does not mean the original message is always secret.
 
-Raw SHA-256 is not a suitable password-storage mechanism.
+If the input belongs to a small set of likely possibilities, an attacker can hash each candidate and compare the result.
 
-The algorithm is intentionally fast. That is valuable for file integrity and general hashing, but dangerous for password storage because attackers can test large numbers of guesses quickly.
+For example, hashing a short, publicly known word does not make that word confidential.
 
-Password systems should use a dedicated password-hashing design with:
+---
 
-- unique salts
-- memory or computation cost
-- configurable work factors
-- resistance to high-rate guessing
+## 🔑 24. Password Security
 
-The source files deliberately use SHA-256 for hashing demonstrations rather than presenting it as a password-storage scheme.
+Raw SHA-256 is not suitable as a password-storage mechanism.
 
-## Integrity Versus Authentication
+SHA-256 is intentionally fast, which is useful for integrity checks but allows attackers to test many password guesses quickly.
 
-A SHA-256 digest can detect accidental modification when the expected digest is trusted.
+Password storage should use a dedicated password-hashing scheme, such as Argon2id, scrypt, or appropriately configured bcrypt or PBKDF2, depending on the system's requirements and available implementation.
 
-It does not prove who created the digest.
+A suitable password-storage design should include:
 
-An attacker who can modify both:
+- A unique salt for each password.
+- A configurable computational cost.
+- Memory-hard processing where supported and appropriate.
+- A maintained, reviewed implementation.
+- A migration strategy for older password hashes.
 
-`file`
+The SHA-256 implementations in this project are intended for algorithm study and integrity demonstrations, not password storage.
 
-and:
+---
 
-`file.sha256`
+## 🪪 25. Integrity Versus Authentication
 
-can recompute the digest.
+A SHA-256 digest can detect modification when the expected digest comes from a trusted source.
 
-Authentication requires a secret-key MAC such as HMAC or a digital signature when public verification is required.
+It does not independently prove who created the digest.
 
-This gives a useful distinction:
+An attacker who can modify both a file and its accompanying digest can calculate a new digest for the modified file.
 
-    SHA-256
-      -> "Does this data produce this digest?"
+The mechanisms serve different purposes:
 
-    HMAC-SHA-256
-      -> "Was this data authenticated with the shared secret?"
+```text
+SHA-256
+   │
+   └── Checks whether data matches a known digest
 
-    Digital signature
-      -> "Can this signature be verified against the public key?"
+HMAC-SHA-256
+   │
+   └── Authenticates data using a shared secret
 
-## Performance
+Digital Signature
+   │
+   └── Supports verification using a public key
+```
 
-For a message containing `n` bytes, the compression work is proportional to the number of 64-byte blocks.
+A MAC such as HMAC-SHA-256 is appropriate when communicating parties share a secret key.
 
-The asymptotic processing cost is:
+A digital signature is appropriate when public-key verification is required.
 
-`O(n)`
+The digest algorithm alone does not provide sender authentication.
 
-The final digest size remains constant:
+---
 
-`O(1)` output size
+## 🚀 26. Performance Characteristics
 
-The working memory required for a streaming implementation is also effectively constant with respect to message size, excluding the caller's input storage.
+For an input containing \(n\) bytes, SHA-256 processes a number of blocks proportional to the input length.
 
-The C++ implementation demonstrates this explicitly by processing complete blocks during `update()` instead of retaining the entire message.
+Its time complexity is:
 
-## Space Characteristics
+\[
+O(n)
+\]
 
-The core compression operation requires:
+The output size remains constant:
 
-- eight 32-bit state words
-- a 64-word message schedule in the direct implementations
-- one 64-byte block
+\[
+O(1)
+\]
 
-A memory-optimized implementation can avoid storing the entire 64-word schedule at once by using a circular schedule buffer.
+A streaming implementation requires constant working memory with respect to the total input size, excluding any storage maintained by the caller.
 
-The provided implementations favor clarity over that optimization.
+### Streaming Versus Whole-Message Processing
 
-## Error Conditions
+| Characteristic | Whole-message approach | Streaming approach |
+|---|---|---|
+| Input handling | Entire message available | Input supplied incrementally |
+| Working storage | May retain padded input | Can retain only state and a partial block |
+| Large-file processing | May require extra memory | Suitable for bounded-memory processing |
+| Finalization | Process padded message | Pad the remaining data and finalize |
+| Example | Direct educational model | C++ `update()` and `final()` |
 
-The implementations validate several classes of incorrect input:
+The direct implementations favor clarity. A production implementation may use optimized libraries and hardware acceleration where available.
 
-| Failure | Handling |
+---
+
+## 💾 27. Space Characteristics
+
+The compression function uses:
+
+- Eight 32-bit chaining-state words.
+- Eight working variables.
+- A 64-word message schedule in straightforward implementations.
+- A 64-byte message block.
+
+A memory-optimized implementation can calculate the message schedule using a circular buffer rather than storing all 64 words simultaneously.
+
+The full schedule is easier to understand in an educational implementation, so the project favors clarity over this optimization.
+
+---
+
+## ⚠️ 28. Error Conditions and Validation
+
+Cryptographic code should reject invalid inputs explicitly.
+
+| Failure | Expected handling |
 |---|---|
-| Wrong Python input type | `TypeError` |
+| Incorrect Python input type | `TypeError` |
 | Invalid JavaScript input type | `TypeError` |
-| Invalid block size | Explicit exception |
+| Invalid block or buffer operation | Explicit exception |
 | Invalid avalanche input | Validation error |
-| Null Java input | `IllegalArgumentException` |
+| Null Java input | `IllegalArgumentException` or documented validation error |
 | Incorrect stored PostgreSQL digest | Trigger rejection |
 | Invalid digest length | Database constraint |
-| Invalid hexadecimal digest | Verification function error |
+| Invalid hexadecimal digest | Verification error |
+| Incomplete streaming input | Correct finalization, not silent data loss |
+| Length overflow beyond supported limits | Reject input or use a documented supported range |
 
-Cryptographic implementations benefit from explicit validation because a silent byte-order or length error can produce consistently incorrect results that look superficially valid.
+A cryptographic implementation can produce a plausible-looking digest even when its internal logic is wrong. Known-answer tests and independent verification are therefore essential.
 
-## Testing Strategy
+---
 
-The source files use three important forms of verification.
+## 🧪 29. Testing Strategy
 
-### Known-Answer Tests
+The source programs use three principal forms of verification.
 
-Known values such as the SHA-256 digest of:
+### 29.1 Known-Answer Tests
 
-`abc`
+Known-answer tests compare calculated digests against standardized expected values.
 
-are compared against expected standardized results.
+Example input:
 
-This detects basic algorithm errors.
+```text
+abc
+```
 
-### Independent Reference Tests
+Expected output:
 
-The custom implementations are compared against:
+```text
+ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad
+```
 
-- Python `hashlib`
-- Node.js `crypto`
-- Java `MessageDigest`
+These tests detect many basic implementation errors.
 
-The reference implementation is intentionally separated from the custom compression logic.
+### 29.2 Independent Reference Tests
 
-### Randomized Tests
+The custom implementations can be compared against:
 
-The Python and JavaScript programs generate random inputs and compare custom results with trusted implementations.
+| Language | Reference implementation |
+|---|---|
+| Python | `hashlib.sha256` |
+| JavaScript | Node.js `crypto` |
+| C++17 | A trusted external cryptographic implementation in the test harness |
+| Java 17 | JDK `MessageDigest` |
+| PostgreSQL | `pgcrypto` digest operation |
 
-Randomized testing is especially useful for:
+The reference implementation should be separate from the custom compression logic.
 
-- empty inputs
-- short inputs
-- block boundaries
-- multi-block inputs
-- unusual byte patterns
+For C++, an independent library can be used in the test harness without replacing the educational implementation itself.
 
-## Important Boundary Cases
+### 29.3 Randomized Tests
 
-The padding logic has important boundaries around message lengths close to a block boundary.
+Randomized tests generate many input byte sequences and compare custom outputs against trusted implementations.
 
-For example, an input whose length leaves exactly eight bytes available after appending `0x80` cannot fit the eight-byte length field in the same block.
+They are particularly useful for discovering errors involving:
 
-That causes an additional 64-byte block.
+- Empty inputs.
+- Short messages.
+- Messages near 64-byte boundaries.
+- Multi-block messages.
+- Random binary values.
+- Non-ASCII text.
+- Padding and length encoding.
 
-This is why padding code should not simply append a fixed number of zero bytes.
+Randomized testing complements known-answer tests but does not replace them.
 
-The implementations calculate the required padding dynamically.
+---
 
-## Endianness
+## 🧱 30. Important Boundary Cases
 
-SHA-256 interprets block words and length fields in big-endian order.
+Padding and block processing should be tested at critical lengths.
 
-For example, four bytes:
+| Input length | Purpose |
+|---:|---|
+| 0 bytes | Empty-message behavior |
+| 1 byte | Minimum nonempty input |
+| 3 bytes | Standard `abc` test vector |
+| 55 bytes | Padding fits in one block |
+| 56 bytes | Padding requires an additional block |
+| 63 bytes | Nearly full original block |
+| 64 bytes | Exactly one complete input block before padding |
+| 65 bytes | First byte beyond one block |
+| 119 bytes | Multi-block padding boundary |
+| 120 bytes | Additional padding block required |
+| Several kilobytes | Repeated compression and streaming behavior |
 
-`01 02 03 04`
+These values are useful because padding behavior changes around specific block boundaries.
 
-represent:
+The implementation must account for the original message length, the marker byte, the zero padding, and the final eight-byte length field.
 
-`0x01020304`
+---
 
-The implementations explicitly read and write 32-bit words in big-endian form.
+## 🔀 31. Endianness and Integer Semantics
 
-This is important because host processors may use little-endian memory layouts.
+SHA-256 uses big-endian message-word and length-field encoding.
 
-## Security Design Considerations
+For example:
 
-A production system should generally use a well-tested cryptographic library rather than maintaining a custom SHA-256 implementation.
+```text
+Byte sequence: 01 02 03 04
+Big-endian word: 0x01020304
+```
 
-The custom implementations are useful for understanding:
+The implementations must also preserve modulo-\(2^{32}\) arithmetic.
 
-- message padding
-- word expansion
-- Boolean functions
-- rotations
-- modular arithmetic
-- state transitions
-- compression
+| Language | Important consideration |
+|---|---|
+| Python | Mask arithmetic results to 32 bits |
+| JavaScript | Use deliberate 32-bit operations and unsigned conversions |
+| C++17 | Use `std::uint32_t` |
+| Java 17 | Use 32-bit `int` bit patterns consistently |
+| PostgreSQL | Use the documented `pgcrypto` byte-input interface |
 
-Production cryptography should favor reviewed and maintained implementations.
+The byte order of the input words is part of the algorithm specification and must not depend on the host machine's native memory order.
 
-The source programs therefore use standard library implementations as independent verification references.
+---
 
-## Practical Uses
+## 🔒 32. Security Design Considerations
 
-SHA-256 is commonly useful for:
+The educational implementations are useful for understanding SHA-256 internals, but production systems should generally use well-tested cryptographic libraries.
 
-- file integrity checks
-- content addressing
-- artifact identification
-- software release verification
-- digital-signature inputs
-- Merkle-tree construction
-- blockchain data structures
-- deduplication identifiers
-- integrity metadata
+Custom implementations can introduce subtle errors involving:
 
-The digest alone does not automatically provide confidentiality or sender authentication.
+- Padding.
+- Integer overflow.
+- Byte order.
+- Length encoding.
+- Buffer management.
+- Streaming finalization.
+- Incorrect digest comparisons.
 
-## Conceptual Data Flow
+The project separates three concerns:
 
-    SHA-256
+1. **Algorithm mechanics:** Understand the compression process.
+2. **Independent verification:** Compare the implementation against a trusted reference.
+3. **Operational integrity:** Store and verify digests consistently in a database.
 
-    Input bytes
-         |
-         v
-    UTF-8 / raw bytes
-         |
-         v
-    SHA-256 pad
-         |
-         v
-    +-----------------------+
-    | 512-bit message block |
-    +-----------------------+
-         |
-         v
-    16 initial 32-bit
-    words
-         |
-         v
-    64-word schedule
-         |
-         v
-    +----------------------+
-    | 64 compression rounds|
-    +----------------------+
-         |
-         v
-    Updated 256-bit
-    state
-         |
-    more blocks?
-      /       \
-    yes        no
-     |          |
-     +----<-----+
-                |
-                v
-          256-bit digest
+For production cryptographic systems, prefer reviewed, maintained implementations and follow the security requirements of the application.
 
-## Relationship Between the Five Implementations
+---
 
-The implementations are deliberately complementary.
+## 🏭 33. Practical Applications
 
-Python exposes the mathematical structure directly.
+SHA-256 is useful in many engineering and security workflows.
 
-JavaScript emphasizes byte buffers and explicit 32-bit runtime behavior.
+| Application | Role of SHA-256 |
+|---|---|
+| File integrity | Detects changes when compared with a trusted digest |
+| Software distribution | Supports release verification |
+| Artifact identification | Produces a fixed-size content fingerprint |
+| Content-addressed storage | Helps identify content by its digest |
+| Digital signatures | Hashes data as part of signature workflows |
+| Merkle trees | Provides hash values for tree construction |
+| Blockchain data structures | Supports hash-linked structures and other protocol operations |
+| Deduplication | Helps identify candidate duplicate content |
+| Database integrity | Supports validation of stored content |
+| Data pipelines | Helps compare content across processing stages |
 
-C++ demonstrates a streaming, low-level implementation where state and memory handling are explicit.
+A digest alone does not automatically provide confidentiality, authorization, or sender authentication.
 
-Java models the algorithm with strong typing and uses the JDK cryptographic provider as an independent verification mechanism.
+---
 
-PostgreSQL moves the focus from algorithm internals to operational data integrity, including storage, constraints, triggers, verification records, indexes, and transactions.
+## 🗺️ 34. Conceptual Data Flow
 
-The same underlying SHA-256 mechanism therefore appears in five different engineering contexts without requiring each implementation to be a mechanical translation of another.
+The full SHA-256 process can be summarized as follows:
 
-## What the Implementations Demonstrate
+```text
+╔══════════════════════════════════════════════════╗
+║                    SHA-256                       ║
+╚══════════════════════════════════════════════════╝
+
+             Input Text or Binary Data
+                         │
+                         ▼
+                  UTF-8 / Raw Bytes
+                         │
+                         ▼
+                   Message Padding
+                         │
+                         ▼
+               ┌─────────────────────┐
+               │ 512-Bit Block       │
+               └─────────────────────┘
+                         │
+                         ▼
+                 16 Initial Words
+                         │
+                         ▼
+                 64-Word Schedule
+                         │
+                         ▼
+               ┌─────────────────────┐
+               │ 64 Compression      │
+               │ Rounds              │
+               └─────────────────────┘
+                         │
+                         ▼
+                  State Update
+                         │
+                         ▼
+                 More Blocks?
+                    /       \
+                  Yes        No
+                   │          │
+                   ▼          ▼
+             Next Block   Final State
+                              │
+                              ▼
+                        256-Bit Digest
+                              │
+                              ▼
+                     64-Character Hex
+                       Representation
+```
+
+The digest depends on the complete sequence of processed blocks because each block's output state becomes the next block's input state.
+
+---
+
+## 🔗 35. Relationship Between the Five Implementations
+
+The five artifacts are deliberately complementary rather than mechanical translations of one another.
+
+| Dimension | Python | JavaScript | C++17 | Java 17 | PostgreSQL |
+|---|---|---|---|---|---|
+| Primary goal | Explain the algorithm | Manage byte buffers and runtime arithmetic | Demonstrate low-level processing | Combine explicit logic with typed APIs | Enforce data integrity |
+| Custom compression | Yes | Yes | Yes | Yes | No |
+| Explicit padding | Yes | Yes | Yes | Yes | Handled by `pgcrypto` |
+| Message schedule | List | `Uint32Array` | `std::array` | `int[]` | Internal to extension |
+| Streaming interface | Optional | Optional | Core design | Optional | Database operation |
+| Reference verification | `hashlib` | `crypto` | External test reference | `MessageDigest` | `pgcrypto` |
+| Database constraints | Not applicable | Not applicable | Not applicable | Not applicable | Central focus |
+| Audit workflow | Test output | Test output | Test output | Test output | Verification records |
+
+### Python
+
+Makes the mathematical structure easy to inspect.
+
+### JavaScript
+
+Emphasizes byte buffers and deliberate handling of 32-bit runtime operations.
+
+### C++17
+
+Demonstrates explicit state, memory management, and incremental processing.
+
+### Java 17
+
+Shows how strongly typed application code can implement the algorithm while using the JDK for independent verification.
+
+### PostgreSQL
+
+Demonstrates how hashing can support a database-integrity workflow through storage, constraints, triggers, verification records, and transactions.
+
+---
+
+## 📋 36. What the Implementations Demonstrate
 
 The complete workflow is:
 
-    Message
-      |
-      v
-    Encoding
-      |
-      v
-    Padding
-      |
-      v
-    512-bit block
-      |
-      v
-    16 words
-      |
-      v
-    64-word schedule
-      |
-      v
-    64 rounds
-      |
-      v
-    State update
-      |
-      v
-    Next block
-      |
-      v
-    Final 256-bit digest
+```text
+Message
+   │
+   ▼
+Encoding
+   │
+   ▼
+Padding
+   │
+   ▼
+512-Bit Block
+   │
+   ▼
+16 Initial Words
+   │
+   ▼
+64-Word Schedule
+   │
+   ▼
+64 Compression Rounds
+   │
+   ▼
+State Update
+   │
+   ▼
+Next Block, If Required
+   │
+   ▼
+Final 256-Bit Digest
+```
 
-The accompanying tests then establish:
+The verification workflow is separate:
 
-    Custom implementation
-            |
-            +---- known-answer tests
-            |
-            +---- standard-library comparison
-            |
-            +---- randomized testing
-            |
-            +---- avalanche experiment
-            |
-            +---- database integrity validation
+```text
+Custom Implementation
+          │
+          ├── Known-answer tests
+          │
+          ├── Independent reference comparison
+          │
+          ├── Randomized testing
+          │
+          ├── Boundary-case testing
+          │
+          ├── Avalanche experiment
+          │
+          └── Database integrity validation
+```
 
-This separation between algorithm mechanics, independent verification, and operational integrity is the central design principle of the five artifacts.
+This separation is important because a correct-looking digest is not sufficient evidence that an implementation is correct.
+
+---
+
+## 🏁 37. Conclusion
+
+SHA-256 illustrates how a cryptographic hash function transforms arbitrary-length input into a fixed-size digest through padding, message scheduling, repeated compression rounds, and state updates.
+
+The five implementations demonstrate different aspects of the same mechanism:
+
+- **Python** presents the algorithm in a readable mathematical form.
+- **JavaScript** emphasizes byte-oriented processing and explicit 32-bit operations.
+- **C++17** demonstrates low-level control and streaming input.
+- **Java 17** combines explicit algorithm logic with standard-library verification.
+- **PostgreSQL** applies hashing to database integrity and operational auditing.
+
+Together, they provide a practical study of cryptographic hashing across application development, systems programming, and database engineering.
+
+The central engineering principle is to distinguish the mathematical algorithm from its implementation and from the system in which it is used. Understanding all three makes it easier to test correctness, identify implementation errors, and apply SHA-256 appropriately.
+
+**Final takeaway:** SHA-256 provides a standardized 256-bit digest, while correct byte encoding, padding, modular arithmetic, independent verification, and trusted operational practices determine whether a real implementation uses it correctly.
